@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/inputMeal"
+        android:title="Input Meal"
+        android:icon="@mipmap/ic_inputmeal_foreground"/>
+    <item
+        android:id="@+id/recipe"
+        android:title="Recipe"
+        android:icon="@mipmap/ic_recipe_foreground"/>
+    <item
+        android:id="@+id/ingredients"
+        android:title="Ingredients"
+        android:icon="@mipmap/ic_ingredients_foreground"/>
+    <item
+        android:id="@+id/shoppingList"
+        android:title="Shopping List"
+        android:icon="@mipmap/ic_shoppinglist_foreground"/>
+
+</menu>
