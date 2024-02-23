@@ -13,9 +13,13 @@
         android:theme="@style/Theme.GreenPlate"
         tools:targetApi="31">
         <activity
+            android:name=".views.LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".views.SignUpActivity"
             android:exported="true">
         </activity>
+
         <activity android:name=".views.SplashActivity"
             android:exported="true">
             <intent-filter>
@@ -29,4 +33,5 @@
             android:exported="true">
         </activity>
     </application>
+
 </manifest>
