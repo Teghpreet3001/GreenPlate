@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         // this code written by kabu to redirect to sign up page will be removed later (i think)
       
         // Create an Intent to start SignUpActivity
-        Intent intent = new Intent(this, SignUpActivity.class);
+        Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
         startActivity(intent);
 
         // Optional: If you don't want users to return to MainActivity by pressing back,
