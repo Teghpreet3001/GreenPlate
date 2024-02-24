@@ -2,7 +2,9 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.GreenPlate" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/green</item>
+        <item name="android:textViewStyle">@style/AndikaTextViewStyle</item>
     </style>
 
     <style name="Theme.GreenPlate" parent="Base.Theme.GreenPlate" />
+
 </resources>
