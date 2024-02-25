@@ -32,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextUsername = findViewById(R.id.editTextUsernameLogin);
         editTextPassword = findViewById(R.id.editTextPasswordLogin);
         Button loginButton = findViewById(R.id.loginButton);
+        Button exitAppButton = findViewById(R.id.buttonExitApp);
 
         TextView signUpText = findViewById(R.id.textViewSignUpLink);
         signUpText.setOnClickListener(v -> {
@@ -65,6 +66,11 @@ public class LoginActivity extends AppCompatActivity {
                     });
                 }
             }
+        });
+
+        exitAppButton.setOnClickListener(v ->  {
+            LoginActivity.this.finishAffinity();
+            System.exit(0);
         });
     }
 }
