@@ -12,6 +12,7 @@ import com.example.greenplate.views.mainFragments.InputMealFragment;
 import com.example.greenplate.views.mainFragments.RecipeFragment;
 import com.example.greenplate.views.mainFragments.ShoppingListFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,19 +23,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
       
-        // this code written by kabu to redirect to sign up page will be removed later (i think)
+        // this code written by kabu and unnathi to redirect to sign up page will be removed later (i think)
       
         // Create an Intent to start SignUpActivity
-        Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
-        startActivity(intent);
-
-        // Optional: If you don't want users to return to MainActivity by pressing back,
-        // call finish() after starting the activity
-        finish();
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        } else {
+            replaceFragment(new InputMealFragment());
+        }
       
         // the following code is written by rachit
-
-        replaceFragment(new InputMealFragment());
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
