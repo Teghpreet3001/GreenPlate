@@ -50,13 +50,17 @@ public class SignUpActivity extends AppCompatActivity {
 
         registerButton.setOnClickListener(v -> {
             if (editTextUsername.getText() == null) {
-                Toast.makeText(SignUpActivity.this, "Email is invalid", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUpActivity.this, "Email is invalid",
+                        Toast.LENGTH_SHORT).show();
             } else if (editTextPassword.getText() == null) {
-                Toast.makeText(SignUpActivity.this, "Password is invalid", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUpActivity.this, "Password is invalid",
+                        Toast.LENGTH_SHORT).show();
             } else if (editTextFirstName.getText() == null) {
-                Toast.makeText(SignUpActivity.this, "First name is invalid", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUpActivity.this, "First name is invalid",
+                        Toast.LENGTH_SHORT).show();
             } else if (editTextLastName.getText() == null) {
-                Toast.makeText(SignUpActivity.this, "Last name is invalid", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUpActivity.this, "Last name is invalid",
+                        Toast.LENGTH_SHORT).show();
             } else {
                 String email = String.valueOf(editTextUsername.getText()).trim();
                 String password = String.valueOf(editTextPassword.getText());
@@ -64,27 +68,35 @@ public class SignUpActivity extends AppCompatActivity {
                 String lastName = String.valueOf(editTextLastName.getText()).trim();
 
                 if (email.isEmpty()) {
-                    Toast.makeText(SignUpActivity.this, "Email field is empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "Email field is empty",
+                            Toast.LENGTH_SHORT).show();
                 } else if (!email.contains("@") || !email.contains(".")) {
-                    Toast.makeText(SignUpActivity.this, "Email is invalid", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "Email is invalid",
+                            Toast.LENGTH_SHORT).show();
                 } else if (password.trim().isEmpty()) {
-                    Toast.makeText(SignUpActivity.this, "Password is empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "Password is empty",
+                            Toast.LENGTH_SHORT).show();
                 } else if (firstName.isEmpty()) {
-                    Toast.makeText(SignUpActivity.this, "First name field is empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "First name field is empty",
+                            Toast.LENGTH_SHORT).show();
                 } else if (lastName.isEmpty()) {
-                    Toast.makeText(SignUpActivity.this, "Last name field is empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "Last name field is empty",
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     firebaseAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(this, task -> {
                                 if (task.isSuccessful()) {
                                     User user = new User(firstName, lastName, email);
                                     databaseReference.child("users")
-                                            .child(firebaseAuth.getCurrentUser().getUid()).setValue(user);
+                                            .child(firebaseAuth.getCurrentUser()
+                                                    .getUid()).setValue(user);
 
-                                    Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                                    Intent intent = new Intent(SignUpActivity.this,
+                                            MainActivity.class);
                                     startActivity(intent);
                                 } else {
-                                    Toast.makeText(SignUpActivity.this, "Failed to create user", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignUpActivity.this, "Failed to create user",
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
