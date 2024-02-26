@@ -1,4 +1,4 @@
-package com.example.greenplate;
+package com.example.greenplate.models;
 
 public class User {
     private String firstName;
