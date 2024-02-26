@@ -1,4 +1,5 @@
 # CS2340A_Team26_S1
+![cover](https://github.com/rchtgpt/NL2AR/assets/44428198/3ff39bdb-71ae-42ec-9b00-528dbf04c2d4)
 
 ## References
 - https://firebase.google.com/docs/database/android/read-and-write
