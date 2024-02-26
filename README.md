@@ -1,6 +1,9 @@
 # CS2340A_Team26_S1
 ![cover](https://github.com/rchtgpt/NL2AR/assets/44428198/3ff39bdb-71ae-42ec-9b00-528dbf04c2d4)
 
+## Domain Model Diagram
+<img width="554" alt="image" src="https://github.com/rchtgpt/NL2AR/assets/44428198/4d077ac9-6107-482b-8b6d-73109733b7ca">
+
 ## References
 - https://firebase.google.com/docs/database/android/read-and-write
 - https://firebase.google.com/docs/auth/android/password-auth#java
