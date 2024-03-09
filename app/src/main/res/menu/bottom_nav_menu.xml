@@ -18,4 +18,9 @@
         android:title="Shopping List"
         android:icon="@mipmap/ic_shoppinglist_foreground"/>
 
+    <item
+        android:id="@+id/profile"
+        android:title="Profile"
+        android:icon="@mipmap/ic_person_foreground"/>
+
 </menu>
