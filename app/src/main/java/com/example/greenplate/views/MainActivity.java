@@ -40,8 +40,10 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(new RecipeFragment());
             } else if (item.getItemId() == R.id.ingredients) {
                 replaceFragment(new IngredientFragment());
-            } else {
+            } else if (item.getItemId() == R.id.shoppingList){
                 replaceFragment(new ShoppingListFragment());
+            } else {
+                replaceFragment(new ProfileFragment());
             }
             return true;
         });
