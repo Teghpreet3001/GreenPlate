@@ -5,11 +5,54 @@
     android:layout_height="match_parent"
     tools:context=".views.mainFragments.InputMealFragment">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="30sp"
-        android:gravity="center"
-        android:text="Input Meal Screen" />
+        android:orientation="vertical"
+        android:layout_marginHorizontal="20dp"
+        android:gravity="center" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Input Meal"
+            android:textSize="30sp"
+            android:textAlignment="center"
+            android:layout_marginBottom="20dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/mealName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Meal Name"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/mealCalorieCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Estimated Calorie Count"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/storeMealBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Store Meal in Meal Database"
+            android:layout_marginBottom="20dp"/>
+
+    </LinearLayout>
 
 </FrameLayout>
