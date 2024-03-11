@@ -10,79 +10,109 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginHorizontal="20dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_marginBottom="20dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Rachit Gupta"
-            android:textSize="30sp"
-            android:textAlignment="center"
-            android:layout_marginBottom="20dp"/>
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/userFirstName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="John"
+                android:layout_marginRight="5dp"
+                android:textSize="30sp"/>
+
+
+            <TextView
+                android:id="@+id/userLastName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Doe"
+                android:textSize="30sp"/>
+
+
+        </LinearLayout>
+
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/userEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/userEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="rgupta432@gatech.edu"
-                android:hint="Email Address"/>
+                android:hint="Email Address"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="false"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/height"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/height"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="173"
-                android:hint="Height (in cm)"/>
+                android:hint="Height (in inches)"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/weight"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/weight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="140"
                 android:hint="Weight (in lbs)"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/gender"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/gender"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Male"
                 android:hint="Gender"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
+            android:id="@+id/saveInfoBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Information"
+            android:background="@drawable/button_border"
+            android:textColor="@android:color/black"
+            android:gravity="center"/>
+
+        <Button
             android:id="@+id/signOutBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign Out"
-            android:layout_marginBottom="20dp"/>
+            android:text="Sign Out"/>
 
     </LinearLayout>
 

@@ -66,6 +66,9 @@ public class SignUpActivity extends AppCompatActivity {
                 String password = String.valueOf(editTextPassword.getText());
                 String firstName = String.valueOf(editTextFirstName.getText()).trim();
                 String lastName = String.valueOf(editTextLastName.getText()).trim();
+                String height = "Enter your Height (in inches)";
+                String weight = "Enter your Weight (in lbs)";
+                String gender = "Enter your Gender";
 
                 if (email.isEmpty()) {
                     Toast.makeText(SignUpActivity.this, "Email field is empty",
@@ -86,7 +89,7 @@ public class SignUpActivity extends AppCompatActivity {
                     firebaseAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(this, task -> {
                                 if (task.isSuccessful()) {
-                                    User user = new User(firstName, lastName, email);
+                                    User user = new User(firstName, lastName, email, height, weight, gender);
                                     databaseReference.child("users")
                                             .child(firebaseAuth.getCurrentUser()
                                                     .getUid()).setValue(user);
