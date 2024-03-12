@@ -16,6 +16,9 @@ import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
 import java.util.HashMap;
 import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class InputMealViewModel extends ViewModel {
     private DatabaseReference mDatabase;
@@ -24,15 +27,16 @@ public class InputMealViewModel extends ViewModel {
         mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
-    public void storeMeal(String userId, String mealName, int calories) {
+    public void storeMeal(String userId, String date, String mealName, int calories) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        // If the date is not provided, use the current date
+        if (date == null || date.isEmpty()) {
+            date = sdf.format(new Date());
+        }
         // Get a reference to the user
-        DatabaseReference userRef = mDatabase.child("users").child(userId);
+        DatabaseReference mealRef = mDatabase.child("users").child(userId).child("meals").child(date).child(mealName);
 
-        // Update the user's meals map with the new meal
-        Map<String, Object> mealUpdates = new HashMap<>();
-        mealUpdates.put("/meals/" + mealName, calories);
-
-        userRef.updateChildren(mealUpdates)
+        mealRef.setValue(calories)
                 .addOnSuccessListener(aVoid -> {
                     // Handle successful update
                 })

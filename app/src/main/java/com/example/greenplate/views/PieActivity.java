@@ -33,11 +33,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-public class PieActivity extends AppCompatActivity{
+public class PieActivity extends AppCompatActivity {
     private Button ExitBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,33 +63,35 @@ public class PieActivity extends AppCompatActivity{
     private void fetchMealDataAndSetupChart(AnyChartView anyChartView) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentDate = sdf.format(new Date());
 
-        databaseReference.child("users").child(userId).child("meals").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot Snapshot) {
-                List<DataEntry> dataEntries = new ArrayList<>();
-                for (DataSnapshot snapshot : Snapshot.getChildren()) {
-                    String mealName = snapshot.getKey();
-                    Long calories = (Long) snapshot.getValue();
-                    if (mealName != null && calories != null) {
-                        dataEntries.add(new ValueDataEntry(mealName, calories));
+        // Fetch meals for the current date
+        databaseReference.child("users").child(userId).child("meals").child(currentDate)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        List<DataEntry> dataEntries = new ArrayList<>();
+                        for (DataSnapshot mealSnapshot : dataSnapshot.getChildren()) {
+                            String mealName = mealSnapshot.getKey();
+                            // Now we fetch the calories as a Long directly
+                            Long calories = mealSnapshot.getValue(Long.class);
+                            if (mealName != null && calories != null) {
+                                dataEntries.add(new ValueDataEntry(mealName, calories));
+                            }
+                        }
+
+                        Pie pie = AnyChart.pie();
+                        pie.data(dataEntries);
+                        pie.title("Calories in Each Meal for " + currentDate);
+                        anyChartView.setChart(pie);
                     }
-                }
 
-                Pie pie = AnyChart.pie();
-                pie.data(dataEntries);
-
-                pie.title("Calories in Each Meal");
-
-                anyChartView.setChart(pie);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("PieActivity", "Database error: " + databaseError.getMessage());
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e("PieActivity", "Database error: " + databaseError.getMessage());
+                    }
+                });
     }
-
 }
 

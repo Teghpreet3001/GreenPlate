@@ -45,10 +45,12 @@ import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
 
 import java.security.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ArrayList;
 
@@ -71,7 +73,6 @@ public class InputMealFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_input_meal, container, false);
 
-        // Initialize components from both branches
         storeMealBtn = view.findViewById(R.id.storeMealBtn);
         compareCaloriesBtn = view.findViewById(R.id.compareCaloriesBtn);
         MealEatenBtn = view.findViewById(R.id.MealEatenBtn);
@@ -82,7 +83,7 @@ public class InputMealFragment extends Fragment {
 
         inputMealViewModel = new ViewModelProvider(this).get(InputMealViewModel.class);
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        // Button click listener for creating chart
+
         compareCaloriesBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ColumnActivity.class);
             intent.putExtra("calorieGoal", calorieGoal);
@@ -93,7 +94,7 @@ public class InputMealFragment extends Fragment {
             Intent intent = new Intent(getActivity(), PieActivity.class);
             startActivity(intent);
         });
-        // Button click listener for storing meals
+        // storing meals
         storeMealBtn.setOnClickListener(v -> {
             String mealName = mealNameInput.getText().toString().trim();
             String calorieString = mealCaloriesInput.getText().toString().trim();
@@ -116,81 +117,83 @@ public class InputMealFragment extends Fragment {
                 return;
             }
 
-            inputMealViewModel.storeMeal(userId, mealName, calories);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String currentDate = sdf.format(new Date());
+
+            // Correct placement of storeMeal call
+            inputMealViewModel.storeMeal(userId, currentDate, mealName, calories);
             mealNameInput.setText("");
             mealCaloriesInput.setText("");
 
-            // Update calorie goal and daily intake immediately
             fetchAndUpdateCalorieData();
         });
 
-        // Initial fetch and display of calorie data
         fetchAndUpdateCalorieData();
-
         return view;
     }
 
     private void fetchAndUpdateCalorieData() {
-        databaseReference.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    if (snapshot.child("gender").getValue() == null ||
-                            String.valueOf(snapshot.child("gender").getValue()).equals(defaultGender) ||
-                            snapshot.child("age").getValue() == null ||
-                            String.valueOf(snapshot.child("age").getValue()).equals(defaultAge) ||
-                            snapshot.child("weight").getValue() == null ||
-                            String.valueOf(snapshot.child("weight").getValue()).equals(defaultWeight) ||
-                            snapshot.child("height").getValue() == null ||
-                            String.valueOf(snapshot.child("height").getValue()).equals(defaultHeight)) {
-                        Toast.makeText(getContext(), "Please input all your detals in the profile page.", Toast.LENGTH_LONG).show();
-                    } else {
-                        int age = Integer.valueOf(String.valueOf(snapshot.child("age").getValue()));
-                        int weight = Integer.valueOf(String.valueOf(snapshot.child("weight").getValue()));
-                        int height = Integer.valueOf(String.valueOf(snapshot.child("height").getValue()));
-                        String gender = String.valueOf(snapshot.child("gender").getValue());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String currentDate = sdf.format(new Date());
 
-
-                    calorieGoal = calculateBMR(gender, age, weight, height);
-
-                    calorieGoalText.setText("Calculated Calorie Goal: " + calorieGoal);
-
-                        double bmr;
-
-                        if (gender.trim().equals("Male")) {
-                            bmr = 10 * weight + 6.25 * height - 5 * age + 5;
-                        } else {
-                            bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+        databaseReference.child("users").child(userId).child("meals").child(currentDate)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        double dailyCalories = 0;
+                        for (DataSnapshot mealSnapshot : snapshot.getChildren()) {
+                            Long calories = mealSnapshot.getValue(Long.class);
+                            if (calories != null) {
+                                dailyCalories += calories;
+                            }
                         }
-
-                        calorieGoalText.setText("Calculated Calorie Goal: " + bmr);
-                    }
-
-
-                    Map<String, Long> meals = (Map<String, Long>) snapshot.child("meals").getValue();
-                    if (meals != null) {
-                        dailyCalorieIntake = 0;
-
-                        for (String key : meals.keySet()) {
-                            dailyCalorieIntake += meals.get(key);
-                        }
-
+                        dailyCalorieIntake = dailyCalories;
                         dailyCalorieText.setText("Daily Calorie Intake: " + dailyCalorieIntake);
-                    } else {
-                        Toast.makeText(getContext(), "Please input some meals to get your daily calorie intake.", Toast.LENGTH_SHORT).show();
+
+                        // Fetch user profile info for BMR calculation
+                        databaseReference.child("users").child(userId)
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                                        if (userSnapshot.exists()) {
+                                            String ageStr = userSnapshot.child("age").getValue(String.class);
+                                            String weightStr = userSnapshot.child("weight").getValue(String.class);
+                                            String heightStr = userSnapshot.child("height").getValue(String.class);
+                                            String gender = userSnapshot.child("gender").getValue(String.class);
+
+                                            if (ageStr != null && weightStr != null && heightStr != null && gender != null) {
+                                                try {
+                                                    int age = Integer.parseInt(ageStr);
+                                                    int weight = Integer.parseInt(weightStr);
+                                                    int height = Integer.parseInt(heightStr);
+
+                                                    double bmr = calculateBMR(gender, age, weight, height);
+                                                    calorieGoalText.setText("Calculated Calorie Goal: " + bmr);
+                                                    calorieGoal = bmr; // Update global BMR value
+                                                } catch (NumberFormatException e) {
+                                                    Toast.makeText(getContext(), "Error parsing profile information.", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        // errors - again, do we handle these
+                                    }
+                                });
                     }
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // errors - do we wanna handle these?
+                    }
+                });
     }
 
+
+
     private double calculateBMR(String gender, int age, int weight, int height) {
-        // Place your BMR calculation logic here
         return gender.equals("Male") ? 10 * weight + 6.25 * height - 5 * age + 5 :
                 10 * weight + 6.25 * height - 5 * age - 161;
 

@@ -7,7 +7,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
-    private Map<String, Integer> meals;
+    private Map<String, Map<String, Integer>> meals;
     private String height;
     private String weight;
     private String gender;
@@ -55,16 +55,19 @@ public class User {
         this.email = email;
     }
 
-    public Map<String, Integer> getMeals() {
+    public Map<String, Map<String, Integer>> getMeals() {
         return meals;
     }
 
-    public void setMeals(Map<String, Integer> meals) {
+    public void setMeals(Map<String, Map<String, Integer>> meals) {
         this.meals = meals;
     }
 
-    public void addMeal(String mealName, Integer calories) {
-        this.meals.put(mealName, calories);
+    public void addMeal(String date, String mealName, Integer calories) {
+        if (!this.meals.containsKey(date)) {
+            this.meals.put(date, new HashMap<>());
+        }
+        this.meals.get(date).put(mealName, calories);
     }
 
     public String getHeight() {return height;}
