@@ -35,13 +35,10 @@ public class ProfileFragment extends Fragment {
 
     private TextView uFirstName;
     private TextView uLastName;
-    private DatabaseReference dbFirstName, dbLastName, dbUserEmail, dbUserHeight, dbUserWeight, dbUserGender;
+    private DatabaseReference dbFirstName, dbLastName, dbUserEmail, dbUserHeight, dbUserWeight, dbUserGender, dbUserAge;
     private ProfileViewModel mViewModel;
 
-    private TextInputEditText uEmail;
-    private TextInputEditText uHeight;
-    private TextInputEditText uWeight;
-    private TextInputEditText uGender;
+    private TextInputEditText uEmail, uHeight, uWeight, uGender, uAge;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -60,6 +57,7 @@ public class ProfileFragment extends Fragment {
         uHeight = (TextInputEditText) v.findViewById(R.id.height);
         uWeight = (TextInputEditText) v.findViewById(R.id.weight);
         uGender = (TextInputEditText) v.findViewById(R.id.gender);
+        uAge = (TextInputEditText) v.findViewById(R.id.age);
 
         dbFirstName = FirebaseDatabase.getInstance("https://greenplate-d518c-default-rtdb.firebaseio.com/").getReference().child("users").child(user_id).child("firstName");
         dbLastName = FirebaseDatabase.getInstance("https://greenplate-d518c-default-rtdb.firebaseio.com/").getReference().child("users").child(user_id).child("lastName");
@@ -67,6 +65,8 @@ public class ProfileFragment extends Fragment {
         dbUserHeight = FirebaseDatabase.getInstance("https://greenplate-d518c-default-rtdb.firebaseio.com/").getReference().child("users").child(user_id).child("height");
         dbUserWeight = FirebaseDatabase.getInstance("https://greenplate-d518c-default-rtdb.firebaseio.com/").getReference().child("users").child(user_id).child("weight");
         dbUserGender = FirebaseDatabase.getInstance("https://greenplate-d518c-default-rtdb.firebaseio.com/").getReference().child("users").child(user_id).child("gender");
+        dbUserAge = FirebaseDatabase.getInstance("https://greenplate-d518c-default-rtdb.firebaseio.com/").getReference().child("users").child(user_id).child("age");
+
 
         dbFirstName.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -167,18 +167,24 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        dbUserAge.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String userAge = dataSnapshot.getValue(String.class);
+                    uAge.setText(userAge);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("ProfileFragment", "Failed to read user email value.", databaseError.toException());
+            }
+        });
+
         Button saveInfoBtn = v.findViewById(R.id.saveInfoBtn);
 
         saveInfoBtn.setOnClickListener(v_2 -> {
             // Save the updated values to the database
-            System.out.println(uEmail.getText().toString());
-            System.out.println(uHeight.getText().toString());
-            System.out.println(uWeight.getText().toString());
-            System.out.println(uGender.getText().toString());
-            System.out.println(dbUserEmail);
-            System.out.println(dbUserHeight);
-            System.out.println(dbUserWeight);
-            System.out.println(dbUserGender);
             dbUserEmail.setValue(uEmail.getText().toString()).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
@@ -189,6 +195,7 @@ public class ProfileFragment extends Fragment {
             dbUserHeight.setValue(uHeight.getText().toString());
             dbUserWeight.setValue(uWeight.getText().toString());
             dbUserGender.setValue(uGender.getText().toString());
+            dbUserAge.setValue(uAge.getText().toString());
             Toast.makeText(getActivity(), "Data updated!", Toast.LENGTH_LONG).show();
         });
 

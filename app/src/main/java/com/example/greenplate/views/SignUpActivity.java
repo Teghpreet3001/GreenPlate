@@ -69,6 +69,7 @@ public class SignUpActivity extends AppCompatActivity {
                 String height = "Enter your Height (in inches)";
                 String weight = "Enter your Weight (in lbs)";
                 String gender = "Enter your Gender";
+                String age = "Enter your Age";
 
                 if (email.isEmpty()) {
                     Toast.makeText(SignUpActivity.this, "Email field is empty",
@@ -89,11 +90,10 @@ public class SignUpActivity extends AppCompatActivity {
                     firebaseAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(this, task -> {
                                 if (task.isSuccessful()) {
-                                    User user = new User(firstName, lastName, email, height, weight, gender);
+                                    User user = new User(firstName, lastName, email, height, weight, gender, age);
                                     databaseReference.child("users")
                                             .child(firebaseAuth.getCurrentUser()
                                                     .getUid()).setValue(user);
-
                                     Intent intent = new Intent(SignUpActivity.this,
                                             MainActivity.class);
                                     startActivity(intent);
