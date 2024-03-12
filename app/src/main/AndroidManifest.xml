@@ -38,6 +38,10 @@
             android:name=".views.ColumnActivity"
             android:exported="true">
         </activity>
+        <activity
+            android:name=".views.PieActivity"
+            android:exported="true">
+        </activity>
     </application>
 
 </manifest>

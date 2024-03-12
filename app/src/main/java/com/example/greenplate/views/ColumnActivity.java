@@ -32,6 +32,14 @@ public class ColumnActivity extends AppCompatActivity{
             super.onCreate(savedInstanceState);
             setContentView(R.layout.column_activity);
 
+            ExitBtn = findViewById(R.id.ExitBtn);
+            ExitBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Finish the current activity
+                    finish();
+                                           }
+            });
             AnyChartView anyChartView = findViewById(R.id.any_chart_view);
             anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
@@ -54,7 +62,7 @@ public class ColumnActivity extends AppCompatActivity{
                     .anchor(Anchor.CENTER_BOTTOM)
                     .offsetX(0d)
                     .offsetY(5d)
-                    .format("${%Value}{groupsSeparator: }");
+                    .format("{%Value}{groupsSeparator: }");
 
             cartesian.animation(true);
             cartesian.title("Calorie Comparison");

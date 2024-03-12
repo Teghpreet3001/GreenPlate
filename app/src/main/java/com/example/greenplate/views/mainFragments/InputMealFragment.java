@@ -18,6 +18,7 @@ import android.widget.Toast;
 import android.content.Intent;
 
 import com.example.greenplate.views.ColumnActivity;
+import com.example.greenplate.views.PieActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.example.greenplate.R;
 import com.example.greenplate.viewmodels.InputMealViewModel;
@@ -51,13 +52,13 @@ public class InputMealFragment extends Fragment {
 
     private Button storeMealBtn;
     private Button compareCaloriesBtn;
-
+    private Button MealEatenBtn;
     private TextInputEditText mealNameInput, mealCaloriesInput;
     private TextView calorieGoalText, dailyCalorieText;
     private InputMealViewModel inputMealViewModel;
     private DatabaseReference databaseReference;
     private double calorieGoal = 0.0;
-    private long dailyCalorieIntake = 0;
+    private double dailyCalorieIntake = 0.0;
     final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
@@ -69,6 +70,7 @@ public class InputMealFragment extends Fragment {
         // Initialize components from both branches
         storeMealBtn = view.findViewById(R.id.storeMealBtn);
         compareCaloriesBtn = view.findViewById(R.id.compareCaloriesBtn);
+        MealEatenBtn = view.findViewById(R.id.MealEatenBtn);
         mealNameInput = view.findViewById(R.id.mealNameInput);
         mealCaloriesInput = view.findViewById(R.id.mealCaloriesInput);
         calorieGoalText = view.findViewById(R.id.calorieGoalText);
@@ -81,6 +83,10 @@ public class InputMealFragment extends Fragment {
             Intent intent = new Intent(getActivity(), ColumnActivity.class);
             intent.putExtra("calorieGoal", calorieGoal);
             intent.putExtra("dailyCalorieIntake", dailyCalorieIntake);
+            startActivity(intent);
+        });
+        MealEatenBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), PieActivity.class);
             startActivity(intent);
         });
         // Button click listener for storing meals
