@@ -176,7 +176,6 @@ public class InputMealFragment extends Fragment {
                         }
 
                         dailyCalorieText.setText("Daily Calorie Intake: " + dailyCalorieIntake);
-                        dailyCalorieText.setText("Daily Calorie Intake: " + calorieIntake);
                     } else {
                         Toast.makeText(getContext(), "Please input some meals to get your daily calorie intake.", Toast.LENGTH_SHORT).show();
                     }
