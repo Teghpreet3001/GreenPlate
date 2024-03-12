@@ -1,12 +1,15 @@
 package com.example.greenplate.views.mainFragments;
 
+import static com.example.greenplate.views.SignUpActivity.defaultAge;
+import static com.example.greenplate.views.SignUpActivity.defaultGender;
+import static com.example.greenplate.views.SignUpActivity.defaultHeight;
+import static com.example.greenplate.views.SignUpActivity.defaultWeight;
+
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,22 +94,33 @@ public class InputMealFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    String gender = String.valueOf(snapshot.child("gender").getValue());
-                    int age = (Integer.valueOf(String.valueOf(snapshot.child("age").getValue())) != null) ? Integer.valueOf(String.valueOf(snapshot.child("age").getValue())) : 19;
-                    int weight = Integer.valueOf(String.valueOf(snapshot.child("weight").getValue()));
-                    int height = Integer.valueOf(String.valueOf(snapshot.child("height").getValue()));
-
-                    double bmr;
-
-                    if (gender.trim().equals("Male")) {
-                        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+                    if (snapshot.child("gender").getValue() == null ||
+                            String.valueOf(snapshot.child("gender").getValue()).equals(defaultGender) ||
+                            snapshot.child("age").getValue() == null ||
+                            String.valueOf(snapshot.child("age").getValue()).equals(defaultAge) ||
+                            snapshot.child("weight").getValue() == null ||
+                            String.valueOf(snapshot.child("weight").getValue()).equals(defaultWeight) ||
+                            snapshot.child("height").getValue() == null ||
+                            String.valueOf(snapshot.child("height").getValue()).equals(defaultHeight)) {
+                        Toast.makeText(getContext(), "Please input all your detals in the profile page.", Toast.LENGTH_LONG).show();
                     } else {
-                        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+                        int age = Integer.valueOf(String.valueOf(snapshot.child("age").getValue()));
+                        int weight = Integer.valueOf(String.valueOf(snapshot.child("weight").getValue()));
+                        int height = Integer.valueOf(String.valueOf(snapshot.child("height").getValue()));
+                        String gender = String.valueOf(snapshot.child("gender").getValue());
+
+                        double bmr;
+
+                        if (gender.trim().equals("Male")) {
+                            bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+                        } else {
+                            bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+                        }
+
+                        calorieGoalText.setText("Calculated Calorie Goal: " + bmr);
                     }
 
-                    calorieGoalText.setText("Calculated Calorie Goal: " + bmr);
                     Map<String, Long> meals = (Map<String, Long>) snapshot.child("meals").getValue();
-
                     if (meals != null) {
                         long calorieIntake = 0;
 
@@ -115,6 +129,8 @@ public class InputMealFragment extends Fragment {
                         }
 
                         dailyCalorieText.setText("Daily Calorie Intake: " + calorieIntake);
+                    } else {
+                        Toast.makeText(getContext(), "Please input some meals to get your daily calorie intake.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

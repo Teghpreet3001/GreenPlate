@@ -21,6 +21,10 @@ public class SignUpActivity extends AppCompatActivity {
     private TextView editTextFirstName;
     private TextView editTextLastName;
     private DatabaseReference databaseReference;
+    public static final String defaultGender = "Enter your Gender";
+    public static final String defaultHeight = "Enter your Height (in inches)";
+    public static final String defaultWeight = "Enter your Weight (in lbs)";
+    public static final String defaultAge = "Enter your Age";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +70,6 @@ public class SignUpActivity extends AppCompatActivity {
                 String password = String.valueOf(editTextPassword.getText());
                 String firstName = String.valueOf(editTextFirstName.getText()).trim();
                 String lastName = String.valueOf(editTextLastName.getText()).trim();
-                String height = "Enter your Height (in inches)";
-                String weight = "Enter your Weight (in lbs)";
-                String gender = "Enter your Gender";
-                String age = "Enter your Age";
 
                 if (email.isEmpty()) {
                     Toast.makeText(SignUpActivity.this, "Email field is empty",
@@ -90,7 +90,7 @@ public class SignUpActivity extends AppCompatActivity {
                     firebaseAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(this, task -> {
                                 if (task.isSuccessful()) {
-                                    User user = new User(firstName, lastName, email, height, weight, gender, age);
+                                    User user = new User(firstName, lastName, email, defaultHeight, defaultWeight, defaultGender, defaultAge);
                                     databaseReference.child("users")
                                             .child(firebaseAuth.getCurrentUser()
                                                     .getUid()).setValue(user);
