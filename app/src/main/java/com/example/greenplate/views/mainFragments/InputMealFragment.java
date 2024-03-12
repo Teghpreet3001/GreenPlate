@@ -56,6 +56,8 @@ public class InputMealFragment extends Fragment {
     private TextView calorieGoalText, dailyCalorieText;
     private InputMealViewModel inputMealViewModel;
     private DatabaseReference databaseReference;
+    private double calorieGoal = 0.0;
+    private long dailyCalorieIntake = 0;
     final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
@@ -75,9 +77,11 @@ public class InputMealFragment extends Fragment {
         inputMealViewModel = new ViewModelProvider(this).get(InputMealViewModel.class);
         databaseReference = FirebaseDatabase.getInstance().getReference();
         // Button click listener for creating chart
-       compareCaloriesBtn.setOnClickListener(v -> {
-           Intent intent = new Intent(getActivity(), ColumnActivity.class);
-           startActivity(intent);
+        compareCaloriesBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ColumnActivity.class);
+            intent.putExtra("calorieGoal", calorieGoal);
+            intent.putExtra("dailyCalorieIntake", dailyCalorieIntake);
+            startActivity(intent);
         });
         // Button click listener for storing meals
         storeMealBtn.setOnClickListener(v -> {
@@ -126,25 +130,19 @@ public class InputMealFragment extends Fragment {
                     int weight = Integer.valueOf(String.valueOf(snapshot.child("weight").getValue()));
                     int height = Integer.valueOf(String.valueOf(snapshot.child("height").getValue()));
 
-                    double bmr;
+                    calorieGoal = calculateBMR(gender, age, weight, height);
 
-                    if (gender.trim().equals("Male")) {
-                        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
-                    } else {
-                        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
-                    }
-
-                    calorieGoalText.setText("Calculated Calorie Goal: " + bmr);
+                    calorieGoalText.setText("Calculated Calorie Goal: " + calorieGoal);
                     Map<String, Long> meals = (Map<String, Long>) snapshot.child("meals").getValue();
 
                     if (meals != null) {
-                        long calorieIntake = 0;
+                        dailyCalorieIntake = 0;
 
                         for (String key : meals.keySet()) {
-                            calorieIntake += meals.get(key);
+                            dailyCalorieIntake += meals.get(key);
                         }
 
-                        dailyCalorieText.setText("Daily Calorie Intake: " + calorieIntake);
+                        dailyCalorieText.setText("Daily Calorie Intake: " + dailyCalorieIntake);
                     }
                 }
             }
@@ -156,10 +154,10 @@ public class InputMealFragment extends Fragment {
         });
     }
 
-    public void displayCompareCalories(View view) {
-        AnyChartView anyChartView = view.findViewById(R.id.any_chart_view);
-        APIlib.getInstance().setActiveAnyChartView(anyChartView);
-
+    private double calculateBMR(String gender, int age, int weight, int height) {
+        // Place your BMR calculation logic here
+        return gender.equals("Male") ? 10 * weight + 6.25 * height - 5 * age + 5 :
+                10 * weight + 6.25 * height - 5 * age - 161;
 
     }
 }

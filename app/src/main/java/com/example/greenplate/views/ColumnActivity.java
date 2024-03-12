@@ -35,20 +35,16 @@ public class ColumnActivity extends AppCompatActivity{
             AnyChartView anyChartView = findViewById(R.id.any_chart_view);
             anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
+            Intent intent = getIntent();
+            double calorieGoal = intent.getDoubleExtra("calorieGoal", 0);
+            double dailyCalorieIntake = intent.getDoubleExtra("dailyCalorieIntake", 0);
+
             Cartesian cartesian = AnyChart.column();
             Log.d("AnyChartDebug", "Setting up chart...");
 
             List<DataEntry> data = new ArrayList<>();
-            data.add(new ValueDataEntry("Rouge", 80540));
-            data.add(new ValueDataEntry("Foundation", 94190));
-            data.add(new ValueDataEntry("Mascara", 102610));
-            data.add(new ValueDataEntry("Lip gloss", 110430));
-            data.add(new ValueDataEntry("Lipstick", 128000));
-            data.add(new ValueDataEntry("Nail polish", 143760));
-            data.add(new ValueDataEntry("Eyebrow pencil", 170670));
-            data.add(new ValueDataEntry("Eyeliner", 213210));
-            data.add(new ValueDataEntry("Eyeshadows", 249980));
-            Log.d("AnyChartDebug", "data entered");
+            data.add(new ValueDataEntry("Calorie Goal", calorieGoal));
+            data.add(new ValueDataEntry("Daily Calorie Intake", dailyCalorieIntake));
 
             Column column = cartesian.column(data);
 
@@ -61,7 +57,7 @@ public class ColumnActivity extends AppCompatActivity{
                     .format("${%Value}{groupsSeparator: }");
 
             cartesian.animation(true);
-            cartesian.title("Top 10 Cosmetic Products by Revenue");
+            cartesian.title("Calorie Comparison");
 
             cartesian.yScale().minimum(0d);
 
@@ -70,12 +66,11 @@ public class ColumnActivity extends AppCompatActivity{
             cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
             cartesian.interactivity().hoverMode(HoverMode.BY_X);
 
-            cartesian.xAxis(0).title("Product");
-            cartesian.yAxis(0).title("Revenue");
-            Log.d("AnyChartDebug", "chart showing");
+            cartesian.xAxis(0).title("Category");
+            cartesian.yAxis(0).title("Calories");
+
+            Log.d("AnyChartDebug", "Chart setup complete.");
             anyChartView.setChart(cartesian);
-
-
         }
     }
 
