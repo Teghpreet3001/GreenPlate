@@ -1,5 +1,6 @@
 package com.example.greenplate.views.mainFragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,9 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Intent;
+
+import com.example.greenplate.views.ColumnActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.example.greenplate.R;
 import com.example.greenplate.viewmodels.InputMealViewModel;
@@ -22,18 +27,37 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.anychart.APIlib;
+import com.anychart.AnyChart;
+import com.anychart.AnyChartView;
+import com.anychart.chart.common.dataentry.DataEntry;
+import com.anychart.chart.common.dataentry.ValueDataEntry;
+import com.anychart.charts.Cartesian;
+import com.anychart.core.cartesian.series.Column;
+import com.anychart.enums.Anchor;
+import com.anychart.enums.HoverMode;
+import com.anychart.enums.Position;
+import com.anychart.enums.TooltipPositionMode;
 
+import java.security.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 public class InputMealFragment extends Fragment {
 
     private Button storeMealBtn;
+    private Button compareCaloriesBtn;
 
     private TextInputEditText mealNameInput, mealCaloriesInput;
     private TextView calorieGoalText, dailyCalorieText;
     private InputMealViewModel inputMealViewModel;
     private DatabaseReference databaseReference;
     final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,6 +66,7 @@ public class InputMealFragment extends Fragment {
 
         // Initialize components from both branches
         storeMealBtn = view.findViewById(R.id.storeMealBtn);
+        compareCaloriesBtn = view.findViewById(R.id.compareCaloriesBtn);
         mealNameInput = view.findViewById(R.id.mealNameInput);
         mealCaloriesInput = view.findViewById(R.id.mealCaloriesInput);
         calorieGoalText = view.findViewById(R.id.calorieGoalText);
@@ -49,7 +74,11 @@ public class InputMealFragment extends Fragment {
 
         inputMealViewModel = new ViewModelProvider(this).get(InputMealViewModel.class);
         databaseReference = FirebaseDatabase.getInstance().getReference();
-
+        // Button click listener for creating chart
+       compareCaloriesBtn.setOnClickListener(v -> {
+           Intent intent = new Intent(getActivity(), ColumnActivity.class);
+           startActivity(intent);
+        });
         // Button click listener for storing meals
         storeMealBtn.setOnClickListener(v -> {
             String mealName = mealNameInput.getText().toString().trim();
@@ -86,6 +115,7 @@ public class InputMealFragment extends Fragment {
 
         return view;
     }
+
     private void fetchAndUpdateCalorieData() {
         databaseReference.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -126,12 +156,10 @@ public class InputMealFragment extends Fragment {
         });
     }
 
-    private String getCurrentUserId() {
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            return FirebaseAuth.getInstance().getCurrentUser().getUid();
-        } else {
-            return null;
-        }
+    public void displayCompareCalories(View view) {
+        AnyChartView anyChartView = view.findViewById(R.id.any_chart_view);
+        APIlib.getInstance().setActiveAnyChartView(anyChartView);
+
+
     }
 }
-
