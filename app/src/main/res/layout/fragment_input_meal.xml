@@ -70,6 +70,8 @@
             android:text="Daily Calorie Intake: "
             android:textAlignment="center"
             android:textSize="20sp" />
+
+
     </LinearLayout>
 
 </FrameLayout>
