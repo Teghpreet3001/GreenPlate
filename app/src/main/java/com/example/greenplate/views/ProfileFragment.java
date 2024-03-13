@@ -1,6 +1,5 @@
 package com.example.greenplate.views;
 
-import static androidx.core.content.PackageManagerCompat.LOG_TAG;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -16,19 +15,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.greenplate.models.SingletonFirebase;
 import com.example.greenplate.viewmodels.ProfileViewModel;
 import com.example.greenplate.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class ProfileFragment extends Fragment {
@@ -40,17 +37,13 @@ public class ProfileFragment extends Fragment {
 
     private TextInputEditText uEmail, uHeight, uWeight, uGender, uAge;
 
-    public static ProfileFragment newInstance() {
-        return new ProfileFragment();
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
         /*Logic for Inflating EditText values*/
-        final String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final String user_id = SingletonFirebase.getInstance().getFirebaseAuth().getCurrentUser().getUid();
         uFirstName = (TextView) v.findViewById(R.id.userFirstName);
         uLastName = (TextView) v.findViewById(R.id.userLastName);
         uEmail = (TextInputEditText) v.findViewById(R.id.userEmail);
@@ -59,13 +52,13 @@ public class ProfileFragment extends Fragment {
         uGender = (TextInputEditText) v.findViewById(R.id.gender);
         uAge = (TextInputEditText) v.findViewById(R.id.age);
 
-        dbFirstName = FirebaseDatabase.getInstance("https://greenplate-d518c-default-rtdb.firebaseio.com/").getReference().child("users").child(user_id).child("firstName");
-        dbLastName = FirebaseDatabase.getInstance("https://greenplate-d518c-default-rtdb.firebaseio.com/").getReference().child("users").child(user_id).child("lastName");
-        dbUserEmail = FirebaseDatabase.getInstance("https://greenplate-d518c-default-rtdb.firebaseio.com/").getReference().child("users").child(user_id).child("email");
-        dbUserHeight = FirebaseDatabase.getInstance("https://greenplate-d518c-default-rtdb.firebaseio.com/").getReference().child("users").child(user_id).child("height");
-        dbUserWeight = FirebaseDatabase.getInstance("https://greenplate-d518c-default-rtdb.firebaseio.com/").getReference().child("users").child(user_id).child("weight");
-        dbUserGender = FirebaseDatabase.getInstance("https://greenplate-d518c-default-rtdb.firebaseio.com/").getReference().child("users").child(user_id).child("gender");
-        dbUserAge = FirebaseDatabase.getInstance("https://greenplate-d518c-default-rtdb.firebaseio.com/").getReference().child("users").child(user_id).child("age");
+        dbFirstName = SingletonFirebase.getInstance().getDatabaseReference().child("users").child(user_id).child("firstName");
+        dbLastName = SingletonFirebase.getInstance().getDatabaseReference().child("users").child(user_id).child("lastName");
+        dbUserEmail = SingletonFirebase.getInstance().getDatabaseReference().child("users").child(user_id).child("email");
+        dbUserHeight = SingletonFirebase.getInstance().getDatabaseReference().child("users").child(user_id).child("height");
+        dbUserWeight = SingletonFirebase.getInstance().getDatabaseReference().child("users").child(user_id).child("weight");
+        dbUserGender = SingletonFirebase.getInstance().getDatabaseReference().child("users").child(user_id).child("gender");
+        dbUserAge = SingletonFirebase.getInstance().getDatabaseReference().child("users").child(user_id).child("age");
 
 
         dbFirstName.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -202,7 +195,7 @@ public class ProfileFragment extends Fragment {
         Button signOutBtn = v.findViewById(R.id.signOutBtn);
 
         signOutBtn.setOnClickListener(v_1 -> {
-            FirebaseAuth.getInstance().signOut();
+            SingletonFirebase.getInstance().getFirebaseAuth().signOut();
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             startActivity(intent);
         });

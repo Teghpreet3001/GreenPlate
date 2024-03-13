@@ -4,6 +4,7 @@ import android.text.Editable;
 
 import androidx.lifecycle.ViewModel;
 
+import com.example.greenplate.models.SingletonFirebase;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginViewModel extends ViewModel {
@@ -34,7 +35,7 @@ public class LoginViewModel extends ViewModel {
         String email = String.valueOf(username);
         String passwordStr = String.valueOf(password);
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth = SingletonFirebase.getInstance().getFirebaseAuth();
         firebaseAuth.signInWithEmailAndPassword(email, passwordStr).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 loginListener.onLoginSuccess();

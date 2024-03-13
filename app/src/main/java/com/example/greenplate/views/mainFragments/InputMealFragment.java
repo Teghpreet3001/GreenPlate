@@ -15,44 +15,25 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Intent;
 
+import com.example.greenplate.models.SingletonFirebase;
 import com.example.greenplate.views.ColumnActivity;
 import com.example.greenplate.views.PieActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.example.greenplate.R;
 import com.example.greenplate.viewmodels.InputMealViewModel;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.anychart.APIlib;
-import com.anychart.AnyChart;
-import com.anychart.AnyChartView;
-import com.anychart.chart.common.dataentry.DataEntry;
-import com.anychart.chart.common.dataentry.ValueDataEntry;
-import com.anychart.charts.Cartesian;
-import com.anychart.core.cartesian.series.Column;
-import com.anychart.enums.Anchor;
-import com.anychart.enums.HoverMode;
-import com.anychart.enums.Position;
-import com.anychart.enums.TooltipPositionMode;
 
-import java.security.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.ArrayList;
 
 public class InputMealFragment extends Fragment {
 
@@ -65,7 +46,7 @@ public class InputMealFragment extends Fragment {
     private DatabaseReference databaseReference;
     private double calorieGoal = 0.0;
     private double dailyCalorieIntake = 0.0;
-    final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    final String userId = SingletonFirebase.getInstance().getFirebaseAuth().getCurrentUser().getUid();
 
 
     @Override
@@ -82,7 +63,7 @@ public class InputMealFragment extends Fragment {
         dailyCalorieText = view.findViewById(R.id.dailyCalorieIntakeText);
 
         inputMealViewModel = new ViewModelProvider(this).get(InputMealViewModel.class);
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference = SingletonFirebase.getInstance().getDatabaseReference();
 
         compareCaloriesBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ColumnActivity.class);

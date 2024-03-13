@@ -12,8 +12,6 @@ import android.widget.Toast;
 
 import com.example.greenplate.R;
 import com.example.greenplate.viewmodels.LoginViewModel;
-import com.example.greenplate.viewmodels.SignUpViewModel;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText editTextUsername;

@@ -7,12 +7,12 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import com.example.greenplate.R;
+import com.example.greenplate.models.SingletonFirebase;
 import com.example.greenplate.views.mainFragments.IngredientFragment;
 import com.example.greenplate.views.mainFragments.InputMealFragment;
 import com.example.greenplate.views.mainFragments.RecipeFragment;
 import com.example.greenplate.views.mainFragments.ShoppingListFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
       
         // Create an Intent to start SignUpActivity
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+        if (SingletonFirebase.getInstance().getFirebaseAuth().getCurrentUser() == null) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         } else {

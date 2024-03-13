@@ -1,6 +1,5 @@
 package com.example.greenplate.views;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -13,23 +12,12 @@ import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
-import com.anychart.charts.Cartesian;
-import com.anychart.core.cartesian.series.Column;
-import com.anychart.enums.Anchor;
-import com.anychart.enums.HoverMode;
-import com.anychart.enums.Position;
-import com.anychart.enums.TooltipPositionMode;
 import com.example.greenplate.R;
-import com.example.greenplate.views.mainFragments.InputMealFragment;
-import com.anychart.AnyChart;
-import com.anychart.AnyChartView;
-import com.anychart.chart.common.dataentry.ValueDataEntry;
+import com.example.greenplate.models.SingletonFirebase;
 import com.anychart.charts.Pie;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
@@ -61,8 +49,8 @@ public class PieActivity extends AppCompatActivity {
     }
 
     private void fetchMealDataAndSetupChart(AnyChartView anyChartView) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference databaseReference = SingletonFirebase.getInstance().getDatabaseReference();
+        String userId = SingletonFirebase.getInstance().getFirebaseAuth().getCurrentUser().getUid();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String currentDate = sdf.format(new Date());
 
