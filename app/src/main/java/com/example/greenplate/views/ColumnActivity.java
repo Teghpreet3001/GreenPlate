@@ -77,7 +77,9 @@ public class ColumnActivity extends AppCompatActivity{
             cartesian.xAxis(0).title("Category");
             cartesian.yAxis(0).title("Calories");
 
-            Log.d("AnyChartDebug", "Chart setup complete.");
+            cartesian.background("#CDEBC5");
+            cartesian.title().fontColor("#000000");
+            cartesian.labels().fontColor("#000000");
             anyChartView.setChart(cartesian);
         }
     }

@@ -83,6 +83,9 @@ public class PieActivity extends AppCompatActivity {
 
                         Pie pie = AnyChart.pie();
                         pie.data(dataEntries);
+                        pie.background("#CDEBC5");
+                        pie.title().fontColor("#000000");
+                        pie.labels().fontColor("#000000");
                         pie.title("Calories in Each Meal for " + currentDate);
                         anyChartView.setChart(pie);
                     }
