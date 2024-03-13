@@ -8,31 +8,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.greenplate.R;
-import com.example.greenplate.models.User;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.example.greenplate.viewmodels.SignUpViewModel;
 
 public class SignUpActivity extends AppCompatActivity {
-    private FirebaseAuth firebaseAuth;
     private EditText editTextUsername;
     private EditText editTextPassword;
-    private TextView editTextFirstName;
-    private TextView editTextLastName;
-    private DatabaseReference databaseReference;
-    public static final String defaultGender = "Enter your Gender";
-    public static final String defaultHeight = "Enter your Height (in inches)";
-    public static final String defaultWeight = "Enter your Weight (in lbs)";
-    public static final String defaultAge = "Enter your Age";
+    private EditText editTextFirstName;
+    private EditText editTextLastName;
+    private SignUpViewModel signUpViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        signUpViewModel = new ViewModelProvider(this).get(SignUpViewModel.class);
     }
 
     @Override
@@ -53,57 +47,28 @@ public class SignUpActivity extends AppCompatActivity {
         editTextLastName = findViewById(R.id.editTextLastName);
 
         registerButton.setOnClickListener(v -> {
-            if (editTextUsername.getText() == null) {
-                Toast.makeText(SignUpActivity.this, "Email is invalid",
-                        Toast.LENGTH_SHORT).show();
-            } else if (editTextPassword.getText() == null) {
-                Toast.makeText(SignUpActivity.this, "Password is invalid",
-                        Toast.LENGTH_SHORT).show();
-            } else if (editTextFirstName.getText() == null) {
-                Toast.makeText(SignUpActivity.this, "First name is invalid",
-                        Toast.LENGTH_SHORT).show();
-            } else if (editTextLastName.getText() == null) {
-                Toast.makeText(SignUpActivity.this, "Last name is invalid",
-                        Toast.LENGTH_SHORT).show();
+            if (!signUpViewModel.handleInputData(editTextUsername.getText(),
+                    editTextPassword.getText(), editTextFirstName.getText(),
+                    editTextLastName.getText())) {
+                Toast.makeText(SignUpActivity.this, "Inputted details are invalid", Toast.LENGTH_SHORT).show();
             } else {
-                String email = String.valueOf(editTextUsername.getText()).trim();
-                String password = String.valueOf(editTextPassword.getText());
-                String firstName = String.valueOf(editTextFirstName.getText()).trim();
-                String lastName = String.valueOf(editTextLastName.getText()).trim();
+                signUpViewModel.signUp(editTextUsername.getText(),
+                        editTextPassword.getText(), editTextFirstName.getText(),
+                        editTextLastName.getText(), new SignUpViewModel.SignUpListener() {
+                            @Override
+                            public void onSignUpSuccess() {
+                                Intent intent = new Intent(SignUpActivity.this,
+                                        MainActivity.class);
+                                startActivity(intent);
+                            }
 
-                if (email.isEmpty()) {
-                    Toast.makeText(SignUpActivity.this, "Email field is empty",
-                            Toast.LENGTH_SHORT).show();
-                } else if (!email.contains("@") || !email.contains(".")) {
-                    Toast.makeText(SignUpActivity.this, "Email is invalid",
-                            Toast.LENGTH_SHORT).show();
-                } else if (password.trim().isEmpty()) {
-                    Toast.makeText(SignUpActivity.this, "Password is empty",
-                            Toast.LENGTH_SHORT).show();
-                } else if (firstName.isEmpty()) {
-                    Toast.makeText(SignUpActivity.this, "First name field is empty",
-                            Toast.LENGTH_SHORT).show();
-                } else if (lastName.isEmpty()) {
-                    Toast.makeText(SignUpActivity.this, "Last name field is empty",
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    firebaseAuth.createUserWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(this, task -> {
-                                if (task.isSuccessful()) {
-                                    User user = new User(firstName, lastName, email, defaultHeight, defaultWeight, defaultGender, defaultAge);
-                                    databaseReference.child("users")
-                                            .child(firebaseAuth.getCurrentUser()
-                                                    .getUid()).setValue(user);
-                                    Intent intent = new Intent(SignUpActivity.this,
-                                            MainActivity.class);
-                                    startActivity(intent);
-                                } else {
-                                    Toast.makeText(SignUpActivity.this, "Failed to create user",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                }
+                            @Override
+                            public void onSignUpFailure() {
+                                Toast.makeText(SignUpActivity.this, "Sign up failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
+
         });
     }
 }

@@ -1,6 +1,7 @@
 package com.example.greenplate.views;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,19 +11,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.greenplate.R;
+import com.example.greenplate.viewmodels.LoginViewModel;
+import com.example.greenplate.viewmodels.SignUpViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
-    private FirebaseAuth firebaseAuth;
     private EditText editTextUsername;
     private EditText editTextPassword;
+    private LoginViewModel loginViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
     }
 
     @Override
@@ -41,38 +45,23 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         loginButton.setOnClickListener(v -> {
-            if (editTextUsername.getText() == null) {
-                Toast.makeText(LoginActivity.this, "Username is invalid", Toast.LENGTH_SHORT)
-                    .show();
-            } else if (editTextPassword.getText() == null) {
-                Toast.makeText(LoginActivity.this, "Password is invalid", Toast.LENGTH_SHORT)
-                    .show();
+            if (!loginViewModel.handleInputData(editTextUsername.getText(),
+                    editTextPassword.getText())) {
+                Toast.makeText(LoginActivity.this, "Inputted details are invalid", Toast.LENGTH_SHORT).show();
             } else {
-                String username = String.valueOf(editTextUsername.getText()).trim();
-                String password = String.valueOf(editTextPassword.getText());
+                loginViewModel.login(editTextUsername.getText(), editTextPassword.getText(), new LoginViewModel.LoginListener() {
+                    @Override
+                    public void onLoginSuccess() {
+                        Intent intent = new Intent(LoginActivity.this,
+                                MainActivity.class);
+                        startActivity(intent);
+                    }
 
-                if (username.isEmpty()) {
-                    Toast.makeText(LoginActivity.this, "Username is blank", Toast.LENGTH_SHORT)
-                        .show();
-                } else if (!username.contains("@") || !username.contains(".")) {
-                    Toast.makeText(LoginActivity.this, "Username is not a valid email",
-                                    Toast.LENGTH_SHORT).show();
-                } else if (password.trim().isEmpty()) {
-                    Toast.makeText(LoginActivity.this, "Password is empty",
-                                    Toast.LENGTH_SHORT).show();
-                } else {
-                    firebaseAuth.signInWithEmailAndPassword(username, password)
-                            .addOnCompleteListener(this, task -> {
-                                if (task.isSuccessful()) {
-                                    Intent intent = new Intent(LoginActivity.this,
-                                            MainActivity.class);
-                                    startActivity(intent);
-                                } else {
-                                    Toast.makeText(LoginActivity.this, "Login failed",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                }
+                    @Override
+                    public void onLoginFailure() {
+                        Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
