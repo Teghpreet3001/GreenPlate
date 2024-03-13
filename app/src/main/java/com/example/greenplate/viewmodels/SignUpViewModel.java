@@ -17,7 +17,8 @@ public class SignUpViewModel extends ViewModel {
     public static final String defaultWeight = "Enter your Weight (in lbs)";
     public static final String defaultAge = "Enter your Age";
 
-    public boolean handleInputData(Editable username, Editable password, Editable firstName, Editable lastName) {
+    public boolean handleInputData(Editable username,
+                                   Editable password, Editable firstName, Editable lastName) {
         if (username == null) {
             return false;
         } else if (password == null) {

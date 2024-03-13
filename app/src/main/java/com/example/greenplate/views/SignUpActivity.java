@@ -50,7 +50,8 @@ public class SignUpActivity extends AppCompatActivity {
             if (!signUpViewModel.handleInputData(editTextUsername.getText(),
                     editTextPassword.getText(), editTextFirstName.getText(),
                     editTextLastName.getText())) {
-                Toast.makeText(SignUpActivity.this, "Inputted details are invalid", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUpActivity.this,
+                        "Inputted details are invalid", Toast.LENGTH_SHORT).show();
             } else {
                 signUpViewModel.signUp(editTextUsername.getText(),
                         editTextPassword.getText(), editTextFirstName.getText(),
@@ -64,7 +65,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                             @Override
                             public void onSignUpFailure() {
-                                Toast.makeText(SignUpActivity.this, "Sign up failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignUpActivity.this,
+                                        "Sign up failed", Toast.LENGTH_SHORT).show();
                             }
                         });
             }

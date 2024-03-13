@@ -32,18 +32,37 @@ public class ProfileFragment extends Fragment {
 
     private TextView uFirstName;
     private TextView uLastName;
-    private DatabaseReference dbFirstName, dbLastName, dbUserEmail, dbUserHeight, dbUserWeight, dbUserGender, dbUserAge;
+    private DatabaseReference dbFirstName;
+    private DatabaseReference dbLastName;
+    private DatabaseReference dbUserEmail;
+
+    private DatabaseReference dbUserHeight;
+
+    private DatabaseReference dbUserWeight;
+    private DatabaseReference dbUserGender;
+
+    private DatabaseReference dbUserAge;
     private ProfileViewModel mViewModel;
 
-    private TextInputEditText uEmail, uHeight, uWeight, uGender, uAge;
+    private TextInputEditText uEmail;
+
+    private TextInputEditText uHeight;
+
+    private TextInputEditText uWeight;
+
+    private TextInputEditText uGender;
+
+    private TextInputEditText uAge;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
         /*Logic for Inflating EditText values*/
-        final String user_id = SingletonFirebase.getInstance().getFirebaseAuth().getCurrentUser().getUid();
+        final String userId = SingletonFirebase.getInstance()
+                .getFirebaseAuth().getCurrentUser().getUid();
         uFirstName = (TextView) v.findViewById(R.id.userFirstName);
         uLastName = (TextView) v.findViewById(R.id.userLastName);
         uEmail = (TextInputEditText) v.findViewById(R.id.userEmail);
@@ -52,13 +71,20 @@ public class ProfileFragment extends Fragment {
         uGender = (TextInputEditText) v.findViewById(R.id.gender);
         uAge = (TextInputEditText) v.findViewById(R.id.age);
 
-        dbFirstName = SingletonFirebase.getInstance().getDatabaseReference().child("users").child(user_id).child("firstName");
-        dbLastName = SingletonFirebase.getInstance().getDatabaseReference().child("users").child(user_id).child("lastName");
-        dbUserEmail = SingletonFirebase.getInstance().getDatabaseReference().child("users").child(user_id).child("email");
-        dbUserHeight = SingletonFirebase.getInstance().getDatabaseReference().child("users").child(user_id).child("height");
-        dbUserWeight = SingletonFirebase.getInstance().getDatabaseReference().child("users").child(user_id).child("weight");
-        dbUserGender = SingletonFirebase.getInstance().getDatabaseReference().child("users").child(user_id).child("gender");
-        dbUserAge = SingletonFirebase.getInstance().getDatabaseReference().child("users").child(user_id).child("age");
+        dbFirstName = SingletonFirebase.getInstance().getDatabaseReference()
+                .child("users").child(userId).child("firstName");
+        dbLastName = SingletonFirebase.getInstance().getDatabaseReference()
+                .child("users").child(userId).child("lastName");
+        dbUserEmail = SingletonFirebase.getInstance().getDatabaseReference()
+                .child("users").child(userId).child("email");
+        dbUserHeight = SingletonFirebase.getInstance().getDatabaseReference()
+                .child("users").child(userId).child("height");
+        dbUserWeight = SingletonFirebase.getInstance().getDatabaseReference()
+                .child("users").child(userId).child("weight");
+        dbUserGender = SingletonFirebase.getInstance().getDatabaseReference()
+                .child("users").child(userId).child("gender");
+        dbUserAge = SingletonFirebase.getInstance().getDatabaseReference()
+                .child("users").child(userId).child("age");
 
 
         dbFirstName.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -71,7 +97,8 @@ public class ProfileFragment extends Fragment {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("ProfileFragment", "Failed to read user email value.", databaseError.toException());
+                Log.e("ProfileFragment", "Failed to read user email value.",
+                        databaseError.toException());
             }
         });
 
@@ -85,7 +112,8 @@ public class ProfileFragment extends Fragment {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("ProfileFragment", "Failed to read user email value.", databaseError.toException());
+                Log.e("ProfileFragment", "Failed to read user email value.",
+                        databaseError.toException());
             }
         });
 
@@ -99,7 +127,8 @@ public class ProfileFragment extends Fragment {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("ProfileFragment", "Failed to read user email value.", databaseError.toException());
+                Log.e("ProfileFragment", "Failed to read user email value.",
+                        databaseError.toException());
             }
         });
 
@@ -114,7 +143,8 @@ public class ProfileFragment extends Fragment {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("ProfileFragment", "Failed to read user email value.", databaseError.toException());
+                Log.e("ProfileFragment", "Failed to read user email value.",
+                        databaseError.toException());
             }
         });
 
@@ -128,7 +158,8 @@ public class ProfileFragment extends Fragment {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("ProfileFragment", "Failed to read user email value.", databaseError.toException());
+                Log.e("ProfileFragment", "Failed to read user email value.",
+                        databaseError.toException());
             }
         });
 
@@ -142,7 +173,8 @@ public class ProfileFragment extends Fragment {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("ProfileFragment", "Failed to read user email value.", databaseError.toException());
+                Log.e("ProfileFragment", "Failed to read user email value.",
+                        databaseError.toException());
             }
         });
 
@@ -156,7 +188,8 @@ public class ProfileFragment extends Fragment {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("ProfileFragment", "Failed to read user email value.", databaseError.toException());
+                Log.e("ProfileFragment", "Failed to read user email value.",
+                        databaseError.toException());
             }
         });
 
@@ -170,7 +203,8 @@ public class ProfileFragment extends Fragment {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("ProfileFragment", "Failed to read user email value.", databaseError.toException());
+                Log.e("ProfileFragment", "Failed to read user email value.",
+                        databaseError.toException());
             }
         });
 
@@ -178,12 +212,13 @@ public class ProfileFragment extends Fragment {
 
         saveInfoBtn.setOnClickListener(v_2 -> {
             // Save the updated values to the database
-            dbUserEmail.setValue(uEmail.getText().toString()).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d("Profile Fragment", e.toString());
-                }
-            });
+            dbUserEmail.setValue(uEmail.getText().toString())
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("Profile Fragment", e.toString());
+                        }
+                    });
 
             dbUserHeight.setValue(uHeight.getText().toString());
             dbUserWeight.setValue(uWeight.getText().toString());
@@ -207,7 +242,6 @@ public class ProfileFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-        // TODO: Use the ViewModel
     }
 
 

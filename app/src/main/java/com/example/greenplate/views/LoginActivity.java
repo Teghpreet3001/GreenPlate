@@ -45,21 +45,25 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(v -> {
             if (!loginViewModel.handleInputData(editTextUsername.getText(),
                     editTextPassword.getText())) {
-                Toast.makeText(LoginActivity.this, "Inputted details are invalid", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this,
+                        "Inputted details are invalid", Toast.LENGTH_SHORT).show();
             } else {
-                loginViewModel.login(editTextUsername.getText(), editTextPassword.getText(), new LoginViewModel.LoginListener() {
-                    @Override
-                    public void onLoginSuccess() {
-                        Intent intent = new Intent(LoginActivity.this,
-                                MainActivity.class);
-                        startActivity(intent);
-                    }
+                loginViewModel.login(editTextUsername.getText(),
+                        editTextPassword.getText(),
+                        new LoginViewModel.LoginListener() {
+                        @Override
+                        public void onLoginSuccess() {
+                            Intent intent = new Intent(LoginActivity.this,
+                                    MainActivity.class);
+                            startActivity(intent);
+                        }
 
-                    @Override
-                    public void onLoginFailure() {
-                        Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onLoginFailure() {
+                            Toast.makeText(LoginActivity.this,
+                                    "Login failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
             }
         });
 

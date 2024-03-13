@@ -22,7 +22,8 @@ public class InputMealViewModel extends ViewModel {
             date = sdf.format(new Date());
         }
         // Get a reference to the user
-        DatabaseReference mealRef = mDatabase.child("users").child(userId).child("meals").child(date).child(mealName);
+        DatabaseReference mealRef = mDatabase.child("users")
+                .child(userId).child("meals").child(date).child(mealName);
 
         mealRef.setValue(calories)
                 .addOnSuccessListener(aVoid -> {

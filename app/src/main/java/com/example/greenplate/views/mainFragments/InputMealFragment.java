@@ -161,7 +161,8 @@ public class InputMealFragment extends Fragment {
                                                     calorieGoal = bmr; // Update global BMR value
                                                 } catch (NumberFormatException e) {
                                                     Toast.makeText(getContext(), "Enter values "
-                                                            + "in Profile Page", Toast.LENGTH_SHORT).show();
+                                                            + "in Profile Page",
+                                                            Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         }

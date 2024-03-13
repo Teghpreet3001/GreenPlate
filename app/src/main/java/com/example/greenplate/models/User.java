@@ -14,7 +14,8 @@ public class User {
 
     private String age;
 
-    public User(String firstName, String lastName, String email, String height, String weight, String gender, String age) {
+    public User(String firstName, String lastName, String email,
+                String height, String weight, String gender, String age) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -27,6 +28,7 @@ public class User {
 
     // Getter for firstName
     public String getFirstName() {
+
         return firstName;
     }
 

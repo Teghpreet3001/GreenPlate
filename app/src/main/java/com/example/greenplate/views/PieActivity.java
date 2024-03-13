@@ -28,15 +28,15 @@ import java.util.List;
 import java.util.Locale;
 
 public class PieActivity extends AppCompatActivity {
-    private Button ExitBtn;
+    private Button exitBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pie_activity);
 
-        ExitBtn = findViewById(R.id.ExitBtn1);
-        ExitBtn.setOnClickListener(new View.OnClickListener() {
+        exitBtn = findViewById(R.id.ExitBtn1);
+        exitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Finish the current activity
@@ -49,7 +49,8 @@ public class PieActivity extends AppCompatActivity {
     }
 
     private void fetchMealDataAndSetupChart(AnyChartView anyChartView) {
-        DatabaseReference databaseReference = SingletonFirebase.getInstance().getDatabaseReference();
+        DatabaseReference databaseReference = SingletonFirebase.getInstance()
+                .getDatabaseReference();
         String userId = SingletonFirebase.getInstance().getFirebaseAuth().getCurrentUser().getUid();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String currentDate = sdf.format(new Date());
