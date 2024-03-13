@@ -1,12 +1,5 @@
 package com.example.greenplate.views.mainFragments;
 
-
-import android.content.Context;
-import static com.example.greenplate.viewmodels.SignUpViewModel.defaultAge;
-import static com.example.greenplate.viewmodels.SignUpViewModel.defaultGender;
-import static com.example.greenplate.viewmodels.SignUpViewModel.defaultHeight;
-import static com.example.greenplate.viewmodels.SignUpViewModel.defaultWeight;
-
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -39,14 +32,18 @@ public class InputMealFragment extends Fragment {
 
     private Button storeMealBtn;
     private Button compareCaloriesBtn;
-    private Button MealEatenBtn;
-    private TextInputEditText mealNameInput, mealCaloriesInput;
-    private TextView calorieGoalText, dailyCalorieText;
+    private Button mealEatenBtn;
+    private TextInputEditText mealNameInput;
+
+    private TextInputEditText mealCaloriesInput;
+    private TextView calorieGoalText;
+    private TextView dailyCalorieText;
     private InputMealViewModel inputMealViewModel;
     private DatabaseReference databaseReference;
     private double calorieGoal = 0.0;
     private double dailyCalorieIntake = 0.0;
-    final String userId = SingletonFirebase.getInstance().getFirebaseAuth().getCurrentUser().getUid();
+    final String userId = SingletonFirebase.getInstance().getFirebaseAuth().getCurrentUser()
+            .getUid();
 
 
     @Override
@@ -56,7 +53,7 @@ public class InputMealFragment extends Fragment {
 
         storeMealBtn = view.findViewById(R.id.storeMealBtn);
         compareCaloriesBtn = view.findViewById(R.id.compareCaloriesBtn);
-        MealEatenBtn = view.findViewById(R.id.MealEatenBtn);
+        mealEatenBtn = view.findViewById(R.id.MealEatenBtn);
         mealNameInput = view.findViewById(R.id.mealNameInput);
         mealCaloriesInput = view.findViewById(R.id.mealCaloriesInput);
         calorieGoalText = view.findViewById(R.id.calorieGoalText);
@@ -71,7 +68,7 @@ public class InputMealFragment extends Fragment {
             intent.putExtra("dailyCalorieIntake", dailyCalorieIntake);
             startActivity(intent);
         });
-        MealEatenBtn.setOnClickListener(v -> {
+        mealEatenBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), PieActivity.class);
             startActivity(intent);
         });
@@ -81,7 +78,8 @@ public class InputMealFragment extends Fragment {
             String calorieString = mealCaloriesInput.getText().toString().trim();
 
             if (mealName.isEmpty() || calorieString.isEmpty()) {
-                Toast.makeText(getActivity(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Please fill in all fields", Toast.LENGTH_SHORT)
+                        .show();
                 return;
             }
 
@@ -89,12 +87,14 @@ public class InputMealFragment extends Fragment {
             try {
                 calories = Integer.parseInt(calorieString);
             } catch (NumberFormatException e) {
-                Toast.makeText(getActivity(), "Calories must be a number", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Calories must be a number", Toast.LENGTH_SHORT)
+                        .show();
                 return;
             }
 
             if (userId == null) {
-                Toast.makeText(getActivity(), "User not signed in", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "User not signed in", Toast.LENGTH_SHORT)
+                        .show();
                 return;
             }
 
@@ -137,22 +137,31 @@ public class InputMealFragment extends Fragment {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                                         if (userSnapshot.exists()) {
-                                            String ageStr = userSnapshot.child("age").getValue(String.class);
-                                            String weightStr = userSnapshot.child("weight").getValue(String.class);
-                                            String heightStr = userSnapshot.child("height").getValue(String.class);
-                                            String gender = userSnapshot.child("gender").getValue(String.class);
+                                            String ageStr = userSnapshot.child("age")
+                                                    .getValue(String.class);
+                                            String weightStr = userSnapshot.child("weight")
+                                                    .getValue(String.class);
+                                            String heightStr = userSnapshot.child("height")
+                                                    .getValue(String.class);
+                                            String gender = userSnapshot.child("gender")
+                                                    .getValue(String.class);
 
-                                            if (ageStr != null && weightStr != null && heightStr != null && gender != null) {
+                                            if (ageStr != null && weightStr != null
+                                                    && heightStr != null && gender != null) {
                                                 try {
                                                     int age = Integer.parseInt(ageStr);
                                                     int weight = Integer.parseInt(weightStr);
                                                     int height = Integer.parseInt(heightStr);
 
-                                                    double bmr = calculateBMR(gender, age, weight, height);
-                                                    calorieGoalText.setText("Calculated Calorie Goal: " + bmr);
+                                                    double bmr = calculateBMR(gender, age,
+                                                            weight, height);
+                                                    calorieGoalText.setText(
+                                                            "Calculated Calorie Goal: " + bmr
+                                                    );
                                                     calorieGoal = bmr; // Update global BMR value
                                                 } catch (NumberFormatException e) {
-                                                    Toast.makeText(getContext(), "Enter values in Profile Page", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getContext(), "Enter values "
+                                                            + "in Profile Page", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         }
@@ -175,8 +184,8 @@ public class InputMealFragment extends Fragment {
 
 
     private double calculateBMR(String gender, int age, int weight, int height) {
-        return gender.equals("Male") ? 10 * weight + 6.25 * height - 5 * age + 5 :
-                10 * weight + 6.25 * height - 5 * age - 161;
+        return gender.equals("Male") ? 10 * weight + 6.25 * height - 5 * age + 5
+                : 10 * weight + 6.25 * height - 5 * age - 161;
 
     }
 }
