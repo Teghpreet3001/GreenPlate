@@ -7,6 +7,7 @@ import com.example.greenplate.viewmodels.LoginViewModel;
 import org.junit.Test;
 
 public class LoginUnitTest {
+    // Unnathi's Test
     @Test
     public void preventsLoginWithNullField() {
         LoginViewModel loginViewModel = new LoginViewModel();

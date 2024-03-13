@@ -72,11 +72,19 @@ public class User {
 
     public String getHeight() {return height;}
 
-    public void setHeight(String height) {this.height = height;}
+    public void setHeight(String height) {
+        if (Integer.parseInt(height) > 0) {
+            this.height = height;
+        }
+    }
 
     public String getWeight() {return weight;}
 
-    public void setWeight(String weight) {this.weight = weight;}
+    public void setWeight(String weight) {
+        if (Integer.parseInt(weight) > 0) {
+            this.weight = weight;
+        }
+    }
 
     public String getGender() {return gender;}
 

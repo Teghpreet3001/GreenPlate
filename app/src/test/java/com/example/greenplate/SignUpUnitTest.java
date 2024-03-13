@@ -6,6 +6,7 @@ import com.example.greenplate.viewmodels.SignUpViewModel;
 import org.junit.Test;
 
 public class SignUpUnitTest {
+    // Unnathi's Test
     @Test
     public void preventsSignUpWithNullField() {
         SignUpViewModel signUpViewModel = new SignUpViewModel();
