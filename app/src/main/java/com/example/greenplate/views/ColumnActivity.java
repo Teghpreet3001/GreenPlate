@@ -19,68 +19,66 @@ import com.anychart.enums.HoverMode;
 import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
 import com.example.greenplate.R;
-import com.example.greenplate.views.mainFragments.InputMealFragment;
-
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ColumnActivity extends AppCompatActivity{
-        private Button ExitBtn;
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.column_activity);
+public class ColumnActivity extends AppCompatActivity {
+    private Button exitBtn;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.column_activity);
 
-            ExitBtn = findViewById(R.id.ExitBtn);
-            ExitBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Finish the current activity
-                    finish();
-                                           }
-            });
-            AnyChartView anyChartView = findViewById(R.id.any_chart_view);
-            anyChartView.setProgressBar(findViewById(R.id.progress_bar));
+        exitBtn = findViewById(R.id.ExitBtn);
+        exitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Finish the current activity
+                finish();
+            }
+        });
+        AnyChartView anyChartView = findViewById(R.id.any_chart_view);
+        anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
-            Intent intent = getIntent();
-            double calorieGoal = intent.getDoubleExtra("calorieGoal", 0);
-            double dailyCalorieIntake = intent.getDoubleExtra("dailyCalorieIntake", 0);
+        Intent intent = getIntent();
+        double calorieGoal = intent.getDoubleExtra("calorieGoal", 0);
+        double dailyCalorieIntake = intent.getDoubleExtra("dailyCalorieIntake", 0);
 
-            Cartesian cartesian = AnyChart.column();
-            Log.d("AnyChartDebug", "Setting up chart...");
+        Cartesian cartesian = AnyChart.column();
+        Log.d("AnyChartDebug", "Setting up chart...");
 
-            List<DataEntry> data = new ArrayList<>();
-            data.add(new ValueDataEntry("Calorie Goal", calorieGoal));
-            data.add(new ValueDataEntry("Daily Calorie Intake", dailyCalorieIntake));
+        List<DataEntry> data = new ArrayList<>();
+        data.add(new ValueDataEntry("Calorie Goal", calorieGoal));
+        data.add(new ValueDataEntry("Daily Calorie Intake", dailyCalorieIntake));
 
-            Column column = cartesian.column(data);
+        Column column = cartesian.column(data);
 
-            column.tooltip()
-                    .titleFormat("{%X}")
-                    .position(Position.CENTER_BOTTOM)
-                    .anchor(Anchor.CENTER_BOTTOM)
-                    .offsetX(0d)
-                    .offsetY(5d)
-                    .format("{%Value}{groupsSeparator: }");
+        column.tooltip()
+                .titleFormat("{%X}")
+                .position(Position.CENTER_BOTTOM)
+                .anchor(Anchor.CENTER_BOTTOM)
+                .offsetX(0d)
+                .offsetY(5d)
+                .format("{%Value}{groupsSeparator: }");
 
-            cartesian.animation(true);
-            cartesian.title("Calorie Comparison");
+        cartesian.animation(true);
+        cartesian.title("Calorie Comparison");
 
-            cartesian.yScale().minimum(0d);
+        cartesian.yScale().minimum(0d);
 
-            cartesian.yAxis(0).labels().format("{%Value}{groupsSeparator: }");
+        cartesian.yAxis(0).labels().format("{%Value}{groupsSeparator: }");
 
-            cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
-            cartesian.interactivity().hoverMode(HoverMode.BY_X);
+        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
+        cartesian.interactivity().hoverMode(HoverMode.BY_X);
 
-            cartesian.xAxis(0).title("Category");
-            cartesian.yAxis(0).title("Calories");
+        cartesian.xAxis(0).title("Category");
+        cartesian.yAxis(0).title("Calories");
 
-            cartesian.background("#CDEBC5");
-            cartesian.title().fontColor("#000000");
-            cartesian.labels().fontColor("#000000");
-            anyChartView.setChart(cartesian);
-        }
+        cartesian.background("#CDEBC5");
+        cartesian.title().fontColor("#000000");
+        cartesian.labels().fontColor("#000000");
+        anyChartView.setChart(cartesian);
     }
+}
 
