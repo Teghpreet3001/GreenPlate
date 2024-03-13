@@ -80,10 +80,18 @@ public class User {
 
     public String getGender() {return gender;}
 
-    public void setGender(String gender) {this.gender = gender;}
+    public void setGender(String gender) {
+        if (gender.equalsIgnoreCase("Male") || gender.equalsIgnoreCase("Female") || gender.equalsIgnoreCase("Other")) {
+            this.gender = gender;
+        }
+    }
   
     public String getAge() {return age;}
 
-    public void setAge(String age) {this.age = age;}
+    public void setAge(String age) {
+        if (Integer.parseInt(age) > 0) {
+            this.age = age;
+        }
+    }
 
 }
