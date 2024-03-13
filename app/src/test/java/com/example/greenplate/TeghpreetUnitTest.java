@@ -16,7 +16,7 @@ public class TeghpreetUnitTest {
     }
 
     @Test
-    public void inValidGender() {
+    public void invalidGender() {
         user.setGender("not a valid gender");
         String gender = user.getGender();
         assertEquals("Gender will not change", "Male", gender);

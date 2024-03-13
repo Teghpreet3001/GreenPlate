@@ -81,7 +81,7 @@ public class User {
     public String getGender() {return gender;}
 
     public void setGender(String gender) {
-        if (gender.equals("Male") || gender.equals("Female") || gender.equals("Other")) {
+        if (gender.equalsIgnoreCase("Male") || gender.equalsIgnoreCase("Female") || gender.equalsIgnoreCase("Other")) {
             this.gender = gender;
         }
     }
