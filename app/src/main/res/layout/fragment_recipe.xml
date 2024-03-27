@@ -5,11 +5,61 @@
     android:layout_height="match_parent"
     tools:context=".views.mainFragments.RecipeFragment">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="30sp"
-        android:gravity="center"
-        android:text="Recipe Screen" />
+        android:orientation="vertical"
+        android:layout_marginHorizontal="20dp"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter a New Recipe"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:layout_marginBottom="20dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/ingredientList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ingredientListInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Ingredient(s) (comma-separated; e.g., rice, beans, chicken)"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/quantities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/quantityInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Quantity for 1 Serving"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/storeRecipeBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Store Recipe in Global Cookbook Database"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Global Cookbook Database"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:layout_marginBottom="20dp"/>
+    </LinearLayout>
 
 </FrameLayout>
