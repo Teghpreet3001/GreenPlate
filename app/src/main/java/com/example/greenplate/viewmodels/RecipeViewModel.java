@@ -12,17 +12,20 @@ import com.example.greenplate.R;
 import com.example.greenplate.models.Recipe;
 
 import java.util.List;
-public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
+
+// Behaves like an adapter
+public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.RecipeViewHolder> {
     private List<Recipe> recipeList;
 
-    public RecipeAdapter(List<Recipe> recipeList) {
+    public RecipeViewModel(List<Recipe> recipeList) {
         this.recipeList = recipeList;
     }
 
     @NonNull
     @Override
     public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recipe, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.item_recipe, parent, false);
         return new RecipeViewHolder(view);
     }
 
@@ -52,7 +55,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
         void bind(Recipe recipe) {
             recipeTitleTextView.setText(recipe.getTitle());
-            recipeIngredientsTextView.setText("Ingredients: " + TextUtils.join(", ", recipe.getIngredients()));
+            recipeIngredientsTextView.setText(
+                    "Ingredients: " + TextUtils.join(", ", recipe.getIngredients()));
             recipeQuantityTextView.setText("Quantity: " + recipe.getQuantity());
         }
     }

@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import com.example.greenplate.R;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.models.SingletonFirebase;
-import com.example.greenplate.viewmodels.RecipeAdapter;
+import com.example.greenplate.viewmodels.RecipeViewModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,14 +24,13 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 public class RecipeFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private RecipeAdapter adapter;
+    private RecipeViewModel adapter;
     private String recipeTitle;
     private String recipeQuantity;
     private List<String> recipeList;
@@ -60,15 +59,16 @@ public class RecipeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
-                    GenericTypeIndicator<HashMap<String, Object>> genericTypeIndicator = new GenericTypeIndicator<HashMap<String, Object>>() {};
+                    GenericTypeIndicator<HashMap<String, Object>> genericTypeIndicator =
+                            new GenericTypeIndicator<HashMap<String, Object>>() { };
                     HashMap<String, Object> recipe = recipeSnapshot.getValue(genericTypeIndicator);
                     recipeTitle = (String) recipe.get("title");
                     recipeIngredients = (List<String>) recipe.get("ingredients");
                     recipeQuantity = (String) recipe.get("quantity");
                     recipeList.add(new Recipe(recipeTitle, recipeIngredients, recipeQuantity));
-                    adapter = new RecipeAdapter(recipeList);
+                    adapter = new RecipeViewModel(recipeList);
                     recyclerView.setAdapter(adapter);
-                    adapter = new RecipeAdapter(recipeList);
+                    adapter = new RecipeViewModel(recipeList);
                     recyclerView.setAdapter(adapter);
                 }
             }
