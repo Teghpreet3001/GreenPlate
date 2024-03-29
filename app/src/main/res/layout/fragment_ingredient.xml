@@ -5,12 +5,36 @@
     android:layout_height="match_parent"
     tools:context=".views.mainFragments.IngredientFragment">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="30sp"
-        android:gravity="center"
-        android:text="Ingredients Screen"
-        />
+        android:orientation="vertical">
+        <!--
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="467dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/ingredientList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </ScrollView>
+        -->
+        <Button
+            android:id="@+id/addIngredientButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Ingredient" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ingredientRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
 
 </FrameLayout>
