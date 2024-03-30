@@ -7,10 +7,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import android.content.Intent;
+import com.example.greenplate.views.RecipeDetailActivity;
 
 import com.example.greenplate.R;
 import com.example.greenplate.models.Recipe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // Behaves like an adapter
@@ -33,6 +36,18 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe recipe = recipeList.get(position);
         holder.bind(recipe);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), RecipeDetailActivity.class);
+
+                intent.putExtra("RECIPE_TITLE", recipe.getTitle());
+                intent.putExtra("RECIPE_QUANTITY", recipe.getQuantity());
+                intent.putStringArrayListExtra("RECIPE_INGREDIENTS", new ArrayList<>(recipe.getIngredients()));
+
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override

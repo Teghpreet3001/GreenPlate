@@ -29,6 +29,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".views.RecipeDetailActivity"
+            android:parentActivityName=".views.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.greenplate.views.MainActivity" />
+        </activity>
+
 
         <activity
             android:name=".views.MainActivity"
