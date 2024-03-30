@@ -18,6 +18,21 @@ public class Recipe {
         this.quantity = quantity;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setQuantity(String quantity) {
+        if (Integer.parseInt(quantity) > 0) {
+            this.quantity = quantity;
+        }
+
+    }
+
+    public void setIngredients(List<String> ingredients) {
+        this.ingredients = ingredients;
+    }
+
     public String getTitle() {
         return title;
     }

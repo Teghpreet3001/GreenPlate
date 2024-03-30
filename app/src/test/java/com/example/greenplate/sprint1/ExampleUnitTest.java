@@ -1,4 +1,4 @@
-package com.example.greenplate;
+package com.example.greenplate.sprint1;
 
 import org.junit.Test;
 
