@@ -49,7 +49,7 @@ public class InputIngredientActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String name = nameInput.getText().toString();
-                double quantity = Double.parseDouble(quantityInput.getText().toString());
+                Integer quantity = Integer.parseInt(quantityInput.getText().toString());
                 int calories = Integer.parseInt(caloriesInput.getText().toString());
                 String expirationDate = expirationInput.getText().toString();
 
