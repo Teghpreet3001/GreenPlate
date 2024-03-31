@@ -12,12 +12,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.greenplate.R;
 import com.example.greenplate.models.Recipe;
 import com.example.greenplate.models.SingletonFirebase;
+import com.example.greenplate.models.SortByQuantityStrategy;
+import com.example.greenplate.models.SortByTitleStrategy;
 import com.example.greenplate.viewmodels.RecipeViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
@@ -36,19 +41,19 @@ public class RecipeFragment extends Fragment {
     private RecipeViewModel adapter;
     private String recipeTitle;
     private String recipeQuantity;
-    private List<String> recipeList;
+    private List<Recipe> recipeList;
     private List<String> recipeIngredients;
     private Button storeRecipeBtn;
+    private Spinner sortSpinner; // Spinner for sorting options
 
     private TextInputEditText recipeNameInput;
-
     private TextInputEditText recipeIngredientsInput;
     private TextInputEditText recipeQuantityInput;
     private TextInputEditText recipeIngredientQuantityInput;
 
 
+    private DatabaseReference recipes;
 
-    private DatabaseReference recipes; // fb stands for firebase not facebook LOL ROFL #HAHAH
     public static RecipeFragment newInstance() {
         return new RecipeFragment();
     }
@@ -64,7 +69,14 @@ public class RecipeFragment extends Fragment {
         recyclerView = rootView.findViewById(R.id.recipeRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recipeList = new ArrayList<>();
-        List<Recipe> recipeList = new ArrayList<>();
+
+        // Initialize the spinner
+        sortSpinner = rootView.findViewById(R.id.sortSpinner);
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
+                getActivity(), R.array.sort_options, android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sortSpinner.setAdapter(spinnerAdapter);
+
         storeRecipeBtn = rootView.findViewById(R.id.storeRecipeBtn);
         recipeNameInput = rootView.findViewById(R.id.recipeNameInput);
         recipeIngredientsInput = rootView.findViewById(R.id.ingredientListInput);
@@ -117,7 +129,29 @@ public class RecipeFragment extends Fragment {
             }
         });
 
+        // Set listener for sorting options
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Apply sorting strategy based on selected option
+                switch (position) {
+                    case 0: // Sort by quantity
+                        adapter.setSortingStrategy(new SortByQuantityStrategy());
+                        adapter.applySortStrategy();
+                        break;
+                    case 1: // Sort by title
+                        adapter.setSortingStrategy(new SortByTitleStrategy());
+                        adapter.applySortStrategy();
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Handle Errors
+            }
+        });
+
         return rootView;
     }
-
 }

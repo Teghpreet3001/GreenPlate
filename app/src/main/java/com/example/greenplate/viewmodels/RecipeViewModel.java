@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 
+import com.example.greenplate.models.RecipeSortStrategy;
 import com.example.greenplate.models.SingletonFirebase;
 import com.example.greenplate.views.RecipeDetailActivity;
 
@@ -26,12 +27,34 @@ import java.util.List;
 public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.RecipeViewHolder> {
     private List<Recipe> recipeList;
     private DatabaseReference mDatabase;
+    private RecipeSortStrategy sortStrategy;
     public RecipeViewModel() {
         // for testing
     }
     public RecipeViewModel(List<Recipe> recipeList) {
         this.recipeList = recipeList;
         mDatabase = SingletonFirebase.getInstance().getDatabaseReference();
+    }
+
+    // Modified constructor to accept the sorting strategy
+    public RecipeViewModel(List<Recipe> recipeList, RecipeSortStrategy sortStrategy) {
+        this.recipeList = recipeList;
+        this.sortStrategy = sortStrategy;
+        mDatabase = SingletonFirebase.getInstance().getDatabaseReference();
+    }
+
+    // Method to set the sorting strategy
+    public void setSortingStrategy(RecipeSortStrategy sortingStrategy) {
+        this.sortStrategy = sortingStrategy;
+    }
+    // Method to apply the sorting strategy
+    public void applySortStrategy() {
+        if (sortStrategy != null) {
+            recipeList = sortStrategy.sortRecipes(recipeList);
+            notifyDataSetChanged();
+        } else {
+            Log.e("RecipeViewModel", "Sorting strategy not set");
+        }
     }
 
     public String[] handleRecipeInputData(String ingredients, String quantity,
@@ -149,7 +172,6 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
     static class RecipeViewHolder extends RecyclerView.ViewHolder {
         private TextView recipeTitleTextView;
         private TextView recipeIngredientsTextView;
-
         private TextView recipeQuantityTextView;
 
         RecipeViewHolder(@NonNull View itemView) {
