@@ -30,11 +30,20 @@ public class IngredientViewModel extends ViewModel {
     public IngredientViewModel() {
         mDatabase = SingletonFirebase.getInstance().getDatabaseReference();
         ingredientListLiveData = new MutableLiveData<>();
-        // Initialize with an empty list
         ingredientListLiveData.setValue(new ArrayList<>());
     }
+    public static String[] handleIngredientInputData(String name, double quantity, int calories, String expiry) {
+        if (name == null) {
+            return new String[]{"false", "Name is null"};
 
-    public void addIngredientToPantry(String userId, Ingredient ingredient) {
+        }
+        if (name.trim().isEmpty()) {
+            return new String[]{"false", "Ingredients field is empty"};
+        }
+        return new String[]{"true", ""};
+
+    }
+        public void addIngredientToPantry(String userId, Ingredient ingredient) {
         if (ingredient.getName() == null || ingredient.getName().trim().isEmpty()) {
             messageLiveData.postValue("Ingredient must have a name.");
             return;
@@ -64,6 +73,7 @@ public class IngredientViewModel extends ViewModel {
                     addPantry(pantryRef, ingredient);
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Handle potential errors
@@ -71,6 +81,7 @@ public class IngredientViewModel extends ViewModel {
             }
         });
     }
+
     private void addPantry(DatabaseReference pantryRef, Ingredient ingredient) {
         pantryRef.setValue(ingredient)
                 .addOnSuccessListener(aVoid -> messageLiveData
@@ -150,3 +161,5 @@ public class IngredientViewModel extends ViewModel {
         });
     }
 }
+
+

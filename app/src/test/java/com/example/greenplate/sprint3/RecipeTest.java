@@ -30,13 +30,19 @@ public class RecipeTest {
                 recipeViewModel.handleRecipeInputData("", "1", "oats")[0];
         assertEquals("Input should not be valid","false",isInputValid);
     }
-
     @Test
     public void testEmptyQuantityField() {
         RecipeViewModel recipeViewModel = new RecipeViewModel();
         String isInputValid =
                 recipeViewModel
                         .handleRecipeInputData("oats, milk", "", "oats")[0];
+        assertEquals("Input should not be valid","false",isInputValid);
+    }
+    @Test
+    public void testEmptyTitleList() {
+        RecipeViewModel recipeViewModel = new RecipeViewModel();
+        String isInputValid =
+                recipeViewModel.handleRecipeInputData("oat, milk", "1", "")[0];
         assertEquals("Input should not be valid","false",isInputValid);
     }
 }
