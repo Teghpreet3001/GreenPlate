@@ -11,9 +11,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.List;
+import androidx.lifecycle.MutableLiveData;
 
 public class IngredientViewModel extends ViewModel {
 
@@ -47,6 +47,7 @@ public class IngredientViewModel extends ViewModel {
                 if (dataSnapshot.exists()) {
                     Ingredient existingIngredient = dataSnapshot.getValue(Ingredient.class);
                     if (existingIngredient != null && existingIngredient.getQuantity() > 0) {
+                        // to add
                     } else {
                         messageLiveData.postValue("The ingredient already exists.");
                         addPantry(pantryRef, ingredient);

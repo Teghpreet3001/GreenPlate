@@ -22,6 +22,19 @@
             android:layout_marginBottom="20dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/recipeName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/recipeNameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Recipe Name"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ingredientList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
