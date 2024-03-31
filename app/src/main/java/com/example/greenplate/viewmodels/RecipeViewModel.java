@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 // Behaves like an adapter
@@ -34,7 +35,7 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
     }
 
     public String[] handleRecipeInputData(String ingredients, String quantity,
-                                         String title) {
+                                         String title, String ingredientQuantities) {
         if (ingredients == null) {
             return new String[]{"false", "Ingredients are null"};
         } else if (quantity == null) {
@@ -63,12 +64,27 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
             return new String[]{"false", "Quantity cannot be negative"};
         }
 
+        if (ingredientQuantities.split(",").length != ingredients.split(",").length) {
+            return new String[]{"false", "Number of quantities and ingredients in"
+                    + " comma-separated list must be equal"};
+        }
+
         return new String[]{"true", ""};
     }
 
     public void storeRecipe(String ingredients, String quantity,
-                            String title) {
-        Recipe recipe = new Recipe(title, Arrays.asList(ingredients.split(",")), quantity);
+                            String title, String ingredientQuantities) {
+        String[] ingredientsArr = ingredients.split(",");
+        String[] ingredientQuantitiesArr = ingredientQuantities.split(",");
+        HashMap<String, Integer> mapIngredientQuantity = new HashMap<>();
+
+        for (int i = 0; i < ingredientsArr.length; i++) {
+            mapIngredientQuantity.put(ingredientsArr[i].trim(),
+                    Integer.valueOf(ingredientQuantitiesArr[i].trim()));
+        }
+
+        Recipe recipe = new Recipe(title, Arrays.asList(ingredientsArr),
+                quantity, mapIngredientQuantity);
 
         mDatabase.child("numRecipes").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
