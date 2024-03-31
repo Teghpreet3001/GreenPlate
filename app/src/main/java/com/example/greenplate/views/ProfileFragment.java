@@ -1,8 +1,5 @@
 package com.example.greenplate.views;
 
-
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -32,6 +29,7 @@ public class ProfileFragment extends Fragment {
 
     private TextView uFirstName;
     private TextView uLastName;
+    private DatabaseReference dbUserID;
     private DatabaseReference dbFirstName;
     private DatabaseReference dbLastName;
     private DatabaseReference dbUserEmail;
@@ -59,8 +57,6 @@ public class ProfileFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
-
-        /*Logic for Inflating EditText values*/
         final String userId = SingletonFirebase.getInstance()
                 .getFirebaseAuth().getCurrentUser().getUid();
         uFirstName = (TextView) v.findViewById(R.id.userFirstName);
@@ -70,38 +66,15 @@ public class ProfileFragment extends Fragment {
         uWeight = (TextInputEditText) v.findViewById(R.id.weight);
         uGender = (TextInputEditText) v.findViewById(R.id.gender);
         uAge = (TextInputEditText) v.findViewById(R.id.age);
-
-        dbFirstName = SingletonFirebase.getInstance().getDatabaseReference()
-                .child("users").child(userId).child("firstName");
-        dbLastName = SingletonFirebase.getInstance().getDatabaseReference()
-                .child("users").child(userId).child("lastName");
-        dbUserEmail = SingletonFirebase.getInstance().getDatabaseReference()
-                .child("users").child(userId).child("email");
-        dbUserHeight = SingletonFirebase.getInstance().getDatabaseReference()
-                .child("users").child(userId).child("height");
-        dbUserWeight = SingletonFirebase.getInstance().getDatabaseReference()
-                .child("users").child(userId).child("weight");
-        dbUserGender = SingletonFirebase.getInstance().getDatabaseReference()
-                .child("users").child(userId).child("gender");
-        dbUserAge = SingletonFirebase.getInstance().getDatabaseReference()
-                .child("users").child(userId).child("age");
-
-
-        dbFirstName.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    String userFirstName = dataSnapshot.getValue(String.class);
-                    uFirstName.setText(userFirstName);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("ProfileFragment", "Failed to read user email value.",
-                        databaseError.toException());
-            }
-        });
-
+        dbUserID = SingletonFirebase.getInstance().getDatabaseReference()
+                .child("users").child(userId);
+        dbFirstName = dbUserID.child("firstName");
+        dbLastName = dbUserID.child("lastName");
+        dbUserEmail = dbUserID.child("email");
+        dbUserHeight = dbUserID.child("height");
+        dbUserWeight = dbUserID.child("weight");
+        dbUserGender = dbUserID.child("gender");
+        dbUserAge = dbUserID.child("age");
         dbFirstName.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -131,8 +104,6 @@ public class ProfileFragment extends Fragment {
                         databaseError.toException());
             }
         });
-
-        // Add a ValueEventListener to retrieve the value of dbUserEmail
         dbUserEmail.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -207,9 +178,7 @@ public class ProfileFragment extends Fragment {
                         databaseError.toException());
             }
         });
-
         Button saveInfoBtn = v.findViewById(R.id.saveInfoBtn);
-
         saveInfoBtn.setOnClickListener(v_2 -> {
             // Save the updated values to the database
             dbUserEmail.setValue(uEmail.getText().toString())
@@ -219,34 +188,18 @@ public class ProfileFragment extends Fragment {
                             Log.d("Profile Fragment", e.toString());
                         }
                     });
-
             dbUserHeight.setValue(uHeight.getText().toString());
             dbUserWeight.setValue(uWeight.getText().toString());
             dbUserGender.setValue(uGender.getText().toString());
             dbUserAge.setValue(uAge.getText().toString());
             Toast.makeText(getActivity(), "Data updated!", Toast.LENGTH_LONG).show();
         });
-
         Button signOutBtn = v.findViewById(R.id.signOutBtn);
-
         signOutBtn.setOnClickListener(v_1 -> {
             SingletonFirebase.getInstance().getFirebaseAuth().signOut();
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             startActivity(intent);
         });
-
         return v;
     }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-    }
-
-
-
-
-
-
 }

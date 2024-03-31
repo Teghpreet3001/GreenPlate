@@ -21,7 +21,6 @@ public class InputMealViewModel extends ViewModel {
         if (date == null || date.isEmpty()) {
             date = sdf.format(new Date());
         }
-        // Get a reference to the user
         DatabaseReference mealRef = mDatabase.child("users")
                 .child(userId).child("meals").child(date).child(mealName);
 

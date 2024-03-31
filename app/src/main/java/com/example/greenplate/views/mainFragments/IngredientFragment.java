@@ -60,7 +60,6 @@ public class IngredientFragment extends Fragment {
 
         RecyclerView ingredientRecyclerView = view.findViewById(R.id.ingredientRecyclerView);
         ingredientRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        System.out.println(ingredients);
         ingredients.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -73,7 +72,6 @@ public class IngredientFragment extends Fragment {
                             new Ingredient(ingredientTitle, ingredientQuantity, 120, "09/09/2024"));
                 }
                 ingredientAdapter = new IngredientAdapter(ingredientList);
-                System.out.println(ingredientAdapter);
                 ingredientRecyclerView.setAdapter(ingredientAdapter);
             }
 
@@ -95,7 +93,6 @@ public class IngredientFragment extends Fragment {
 
         private IngredientAdapter(List<Ingredient> ingredientList) {
             this.ingredientList = ingredientList;
-            System.out.println(ingredientList);
         }
 
         @NonNull
@@ -143,7 +140,6 @@ public class IngredientFragment extends Fragment {
                     public void onClick(View v) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
-                            System.out.println(ingredientList);
                             Ingredient ingredient = ingredientList.get(position);
                             ingredientViewModel.increaseIngredientQuantity(ingredient);
                         }

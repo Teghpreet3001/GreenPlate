@@ -63,13 +63,13 @@
             android:id="@+id/expirationDateLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Expiration Date (optional)"
+            android:hint="Optional Expiry Date (MM/DD/YYYY)"
             android:layout_marginBottom="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/expirationDateInput"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button

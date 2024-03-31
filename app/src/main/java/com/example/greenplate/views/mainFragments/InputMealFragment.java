@@ -42,7 +42,7 @@ public class InputMealFragment extends Fragment {
     private DatabaseReference databaseReference;
     private double calorieGoal = 0.0;
     private double dailyCalorieIntake = 0.0;
-    final String userId = SingletonFirebase.getInstance().getFirebaseAuth().getCurrentUser()
+    private String userId = SingletonFirebase.getInstance().getFirebaseAuth().getCurrentUser()
             .getUid();
 
 

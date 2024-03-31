@@ -13,8 +13,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
-import androidx.lifecycle.MutableLiveData;
-
 public class IngredientViewModel extends ViewModel {
 
     private DatabaseReference mDatabase;
@@ -30,7 +28,6 @@ public class IngredientViewModel extends ViewModel {
     }
 
     public IngredientViewModel() {
-        // Assuming "pantry" is a direct child of the database root
         mDatabase = SingletonFirebase.getInstance().getDatabaseReference();
         ingredientListLiveData = new MutableLiveData<>();
         // Initialize with an empty list
@@ -38,8 +35,21 @@ public class IngredientViewModel extends ViewModel {
     }
 
     public void addIngredientToPantry(String userId, Ingredient ingredient) {
-        DatabaseReference pantryRef = mDatabase.child("users")
-                .child(userId).child("pantry").child(ingredient.getName());
+        if (ingredient.getName() == null || ingredient.getName().trim().isEmpty()) {
+            messageLiveData.postValue("Ingredient must have a name.");
+            return;
+        }
+        if (ingredient.getQuantity() <= 0) {
+            messageLiveData.postValue("Quantity must be positive.");
+            return;
+        }
+        if (ingredient.getCaloriesPerServing() <= 0) {
+            messageLiveData.postValue("Calories per serving must be positive.");
+            return;
+        }
+
+        DatabaseReference pantryRef = mDatabase.child("users").child(userId).child("pantry")
+                .child(ingredient.getName());
 
         pantryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -47,17 +57,13 @@ public class IngredientViewModel extends ViewModel {
                 if (dataSnapshot.exists()) {
                     Ingredient existingIngredient = dataSnapshot.getValue(Ingredient.class);
                     if (existingIngredient != null && existingIngredient.getQuantity() > 0) {
-                        // to add
-                    } else {
                         messageLiveData.postValue("The ingredient already exists.");
-                        addPantry(pantryRef, ingredient);
                     }
                 } else {
                     // Ingredient does not exist, proceed to add
                     addPantry(pantryRef, ingredient);
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Handle potential errors
@@ -65,12 +71,7 @@ public class IngredientViewModel extends ViewModel {
             }
         });
     }
-
     private void addPantry(DatabaseReference pantryRef, Ingredient ingredient) {
-        if (ingredient.getQuantity() <= 0) {
-            messageLiveData.postValue("Quantity must be positive.");
-            return;
-        }
         pantryRef.setValue(ingredient)
                 .addOnSuccessListener(aVoid -> messageLiveData
                         .postValue("Ingredient added to pantry."))

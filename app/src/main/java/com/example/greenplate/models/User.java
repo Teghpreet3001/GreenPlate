@@ -34,26 +34,31 @@ public class User {
 
     // Setter for firstName
     public void setFirstName(String firstName) {
+
         this.firstName = firstName;
     }
 
     // Getter for lastName
     public String getLastName() {
+
         return lastName;
     }
 
     // Setter for lastName
     public void setLastName(String lastName) {
+
         this.lastName = lastName;
     }
 
     // Getter for email
     public String getEmail() {
+
         return email;
     }
 
     // Setter for email
     public void setEmail(String email) {
+
         this.email = email;
     }
 
@@ -72,7 +77,9 @@ public class User {
         this.meals.get(date).put(mealName, calories);
     }
 
-    public String getHeight() {return height;}
+    public String getHeight() {
+        return height;
+    }
 
     public void setHeight(String height) {
         if (Integer.parseInt(height) > 0) {
@@ -80,7 +87,9 @@ public class User {
         }
     }
 
-    public String getWeight() {return weight;}
+    public String getWeight() {
+        return weight;
+    }
 
     public void setWeight(String weight) {
         if (Integer.parseInt(weight) > 0) {
@@ -88,15 +97,21 @@ public class User {
         }
     }
 
-    public String getGender() {return gender;}
+    public String getGender() {
+        return gender;
+    }
 
     public void setGender(String gender) {
-        if (gender.equalsIgnoreCase("Male") || gender.equalsIgnoreCase("Female") || gender.equalsIgnoreCase("Other")) {
+        if (gender.equalsIgnoreCase("Male")
+                || gender.equalsIgnoreCase("Female")
+                || gender.equalsIgnoreCase("Other")) {
             this.gender = gender;
         }
     }
   
-    public String getAge() {return age;}
+    public String getAge() {
+        return age;
+    }
 
     public void setAge(String age) {
         if (Integer.parseInt(age) > 0) {

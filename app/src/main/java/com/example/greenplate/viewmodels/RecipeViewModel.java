@@ -55,7 +55,7 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
 
         try {
             quantityNum = Integer.parseInt(quantity);
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return new String[]{"false", "Quantity must be an integer"};
         }
 
@@ -117,7 +117,8 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
 
                 intent.putExtra("RECIPE_TITLE", recipe.getTitle());
                 intent.putExtra("RECIPE_QUANTITY", recipe.getQuantity());
-                intent.putStringArrayListExtra("RECIPE_INGREDIENTS", new ArrayList<>(recipe.getIngredients()));
+                intent.putStringArrayListExtra("RECIPE_INGREDIENTS",
+                        new ArrayList<>(recipe.getIngredients()));
 
                 v.getContext().startActivity(intent);
             }

@@ -15,8 +15,6 @@ import com.example.greenplate.models.SingletonFirebase;
 import com.example.greenplate.viewmodels.IngredientViewModel;
 
 public class InputIngredientActivity extends AppCompatActivity {
-    final String userId = SingletonFirebase.getInstance().getFirebaseAuth().getCurrentUser()
-            .getUid();
     private Button exitButton;
     private Button addIngredient;
     private EditText nameInput;
@@ -54,7 +52,9 @@ public class InputIngredientActivity extends AppCompatActivity {
                 String expirationDate = expirationInput.getText().toString();
 
                 Ingredient ingredient = new Ingredient(name, quantity, calories, expirationDate);
-                viewModel.addIngredientToPantry(userId,ingredient);
+                viewModel.addIngredientToPantry(SingletonFirebase.getInstance()
+                        .getFirebaseAuth().getCurrentUser()
+                        .getUid(), ingredient);
                 nameInput.setText("");  // Clears the text
                 quantityInput.setText("");
                 caloriesInput.setText("");
