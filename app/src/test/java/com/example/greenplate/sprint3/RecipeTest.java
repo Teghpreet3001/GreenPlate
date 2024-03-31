@@ -2,6 +2,7 @@ package com.example.greenplate.sprint3;
 import static org.junit.Assert.assertEquals;
 
 import com.example.greenplate.models.Recipe;
+import com.example.greenplate.viewmodels.RecipeViewModel;
 
 import org.junit.Test;
 import java.util.Arrays;
@@ -22,5 +23,20 @@ public class RecipeTest {
         assertEquals("Quantity will not change","10",testRecipe.getQuantity());
     }
 
+    @Test
+    public void testEmptyIngredientList() {
+        RecipeViewModel recipeViewModel = new RecipeViewModel();
+        String isInputValid =
+                recipeViewModel.handleRecipeInputData("", "1", "oats")[0];
+        assertEquals("Input should not be valid","false",isInputValid);
+    }
 
+    @Test
+    public void testEmptyQuantityField() {
+        RecipeViewModel recipeViewModel = new RecipeViewModel();
+        String isInputValid =
+                recipeViewModel
+                        .handleRecipeInputData("oats, milk", "", "oats")[0];
+        assertEquals("Input should not be valid","false",isInputValid);
+    }
 }

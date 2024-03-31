@@ -4,12 +4,10 @@ import androidx.lifecycle.ViewModel;
 import com.example.greenplate.models.Ingredient;
 import com.example.greenplate.models.SingletonFirebase;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 public class IngredientViewModel extends ViewModel {
 
@@ -26,7 +24,8 @@ public class IngredientViewModel extends ViewModel {
     }
 
     public void addIngredientToPantry(String userId, Ingredient ingredient) {
-        DatabaseReference pantryRef = mDatabase.child("users").child(userId).child("pantry").child(ingredient.getName());
+        DatabaseReference pantryRef = mDatabase.child("users")
+                .child(userId).child("pantry").child(ingredient.getName());
 
         pantryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -34,6 +33,7 @@ public class IngredientViewModel extends ViewModel {
                 if (dataSnapshot.exists()) {
                     Ingredient existingIngredient = dataSnapshot.getValue(Ingredient.class);
                     if (existingIngredient != null && existingIngredient.getQuantity() > 0) {
+                        // to add
                     } else {
                         messageLiveData.postValue("The ingredient already exists.");
                         addPantry(pantryRef, ingredient);
@@ -58,7 +58,9 @@ public class IngredientViewModel extends ViewModel {
             return;
         }
         pantryRef.setValue(ingredient)
-                .addOnSuccessListener(aVoid -> messageLiveData.postValue("Ingredient added to pantry."))
-                .addOnFailureListener(e -> messageLiveData.postValue("Failed to add ingredient: " + e.getMessage()));
+                .addOnSuccessListener(aVoid ->
+                        messageLiveData.postValue("Ingredient added to pantry."))
+                .addOnFailureListener(e ->
+                        messageLiveData.postValue("Failed to add ingredient: " + e.getMessage()));
     }
 }

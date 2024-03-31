@@ -1,6 +1,7 @@
 package com.example.greenplate.viewmodels;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,20 +9,93 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
+
+import com.example.greenplate.models.SingletonFirebase;
 import com.example.greenplate.views.RecipeDetailActivity;
 
 import com.example.greenplate.R;
 import com.example.greenplate.models.Recipe;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 // Behaves like an adapter
 public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.RecipeViewHolder> {
     private List<Recipe> recipeList;
-
+    private DatabaseReference mDatabase;
+    public RecipeViewModel() {
+        // for testing
+    }
     public RecipeViewModel(List<Recipe> recipeList) {
         this.recipeList = recipeList;
+        mDatabase = SingletonFirebase.getInstance().getDatabaseReference();
+    }
+
+    public String[] handleRecipeInputData(String ingredients, String quantity,
+                                         String title) {
+        if (ingredients == null) {
+            return new String[]{"false", "Ingredients are null"};
+        } else if (quantity == null) {
+            return new String[]{"false", "Quantity is null"};
+        } else if (title == null) {
+            return new String[]{"false", "Recipe title is null"};
+        }
+
+        if (quantity.trim().isEmpty()) {
+            return new String[]{"false", "Quantity field is empty"};
+        } else if (ingredients.trim().isEmpty()) {
+            return new String[]{"false", "Ingredients field is empty"};
+        } else if (title.trim().isEmpty()) {
+            return new String[]{"false", "Recipe title field is empty"};
+        }
+
+        int quantityNum = -1;
+
+        try {
+            quantityNum = Integer.parseInt(quantity);
+        } catch(NumberFormatException e) {
+            return new String[]{"false", "Quantity must be an integer"};
+        }
+
+        if (quantityNum <= 0) {
+            return new String[]{"false", "Quantity cannot be negative"};
+        }
+
+        return new String[]{"true", ""};
+    }
+
+    public void storeRecipe(String ingredients, String quantity,
+                            String title) {
+        Recipe recipe = new Recipe(title, Arrays.asList(ingredients.split(",")), quantity);
+
+        mDatabase.child("numRecipes").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.e("GreenPlate", "Recipe Key: " + task.getResult().getValue());
+
+                long recipeKey = (long) task.getResult().getValue();
+                recipeKey += 1;
+
+                DatabaseReference cookbookRef =
+                        mDatabase.child("cookbook").child(String.valueOf(recipeKey));
+
+                long finalRecipeKey = recipeKey;
+
+                cookbookRef.setValue(recipe)
+                        .addOnSuccessListener(aVoid -> {
+                            mDatabase.child("numRecipes").setValue(finalRecipeKey)
+                                    .addOnFailureListener(e -> {
+                                        Log.e("GreenPlate", "Recipe key was not updated");
+                                    });
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e("GreenPlate", "Recipe was not added");
+                        });
+            } else {
+                Log.e("GreenPlate", "Invalid recipe key");
+            }
+        });
     }
 
     @NonNull

@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.greenplate.R;
 
@@ -32,7 +31,7 @@ public class IngredientFragment extends Fragment {
 
         // Initialize the add ingredient button
         addIngredientButton = view.findViewById(R.id.addIngredientButton);
-         // If you want to do something with the exit button
+        // If you want to do something with the exit button
 
         // Set up the button click listener
         addIngredientButton.setOnClickListener(new View.OnClickListener() {
