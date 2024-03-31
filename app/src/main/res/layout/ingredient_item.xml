@@ -7,6 +7,8 @@
 
     <TextView
         android:id="@+id/nameTextView"
+        android:textAlignment="center"
+        android:gravity="center"
         android:layout_width="0dp"
         android:layout_height="47dp"
         android:layout_weight="1"
@@ -27,7 +29,7 @@
 
         <TextView
             android:id="@+id/quantityTextView"
-            android:layout_width="30dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:text="0"
             android:textAlignment="center"
