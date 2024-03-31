@@ -39,7 +39,9 @@ public class Ingredient {
     }
 
     public void setCaloriesPerServing(int caloriesPerServing) {
-        this.caloriesPerServing = caloriesPerServing;
+        if (caloriesPerServing > 0) {
+            this.caloriesPerServing = caloriesPerServing;
+        }
     }
 
     public String getExpirationDate() {
