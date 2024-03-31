@@ -106,6 +106,7 @@ public class RecipeFragment extends Fragment {
         recipes.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                recipeList.clear();
                 for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
                     GenericTypeIndicator<HashMap<String, Object>> genericTypeIndicator =
                             new GenericTypeIndicator<HashMap<String, Object>>() { };
