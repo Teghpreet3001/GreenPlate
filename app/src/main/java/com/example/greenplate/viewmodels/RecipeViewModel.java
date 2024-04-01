@@ -1,6 +1,6 @@
 package com.example.greenplate.viewmodels;
 
-import android.text.TextUtils;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.example.greenplate.models.RecipeSortStrategy;
 import com.example.greenplate.models.SingletonFirebase;
@@ -22,12 +23,40 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // Behaves like an adapter
 public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.RecipeViewHolder> {
     private List<Recipe> recipeList;
     private DatabaseReference mDatabase;
     private RecipeSortStrategy sortStrategy;
+    private Map<String, Integer> userPantry;
+
+    public RecipeViewModel(List<Recipe> recipeList, Map<String, Integer> userPantry) {
+        this.recipeList = recipeList;
+        this.userPantry = userPantry;
+        mDatabase = SingletonFirebase.getInstance().getDatabaseReference();
+    }
+    private static boolean hasAllIngredients(Recipe recipe, Map<String, Integer> userPantry) {
+        Map<String, Integer> requiredIngredients = recipe.getIngredientQuantities();
+        if (requiredIngredients == null || userPantry == null) {
+            // Log.d("RecipeViewModel", "One or more maps are null.");
+            return false;
+        }
+        for (Map.Entry<String, Integer> entry : requiredIngredients.entrySet()) {
+            String ingredient = entry.getKey();
+            int requiredQuantity = entry.getValue();
+            Integer pantryQuantity = userPantry.get(ingredient);
+            // Log.d("RecipeViewModel", "Checking ingredient: " + ingredient + ", required: " + requiredQuantity + ", in pantry: " + pantryQuantity);
+
+            if (pantryQuantity == null || pantryQuantity < requiredQuantity) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     public RecipeViewModel() {
         // for testing
     }
@@ -36,18 +65,16 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
         mDatabase = SingletonFirebase.getInstance().getDatabaseReference();
     }
 
-    // Modified constructor to accept the sorting strategy
     public RecipeViewModel(List<Recipe> recipeList, RecipeSortStrategy sortStrategy) {
         this.recipeList = recipeList;
         this.sortStrategy = sortStrategy;
         mDatabase = SingletonFirebase.getInstance().getDatabaseReference();
     }
 
-    // Method to set the sorting strategy
     public void setSortingStrategy(RecipeSortStrategy sortingStrategy) {
         this.sortStrategy = sortingStrategy;
     }
-    // Method to apply the sorting strategy
+
     public void applySortStrategy() {
         if (sortStrategy != null) {
             recipeList = sortStrategy.sortRecipes(recipeList);
@@ -95,48 +122,6 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
         return new String[]{"true", ""};
     }
 
-    public void storeRecipe(String ingredients, String quantity,
-                            String title, String ingredientQuantities) {
-        String[] ingredientsArr = ingredients.split(",");
-        String[] ingredientQuantitiesArr = ingredientQuantities.split(",");
-        HashMap<String, Integer> mapIngredientQuantity = new HashMap<>();
-
-        for (int i = 0; i < ingredientsArr.length; i++) {
-            mapIngredientQuantity.put(ingredientsArr[i].trim(),
-                    Integer.valueOf(ingredientQuantitiesArr[i].trim()));
-        }
-
-        Recipe recipe = new Recipe(title, Arrays.asList(ingredientsArr),
-                quantity, mapIngredientQuantity);
-
-        mDatabase.child("numRecipes").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Log.e("GreenPlate", "Recipe Key: " + task.getResult().getValue());
-
-                long recipeKey = (long) task.getResult().getValue();
-                recipeKey += 1;
-
-                DatabaseReference cookbookRef =
-                        mDatabase.child("cookbook").child(String.valueOf(recipeKey));
-
-                long finalRecipeKey = recipeKey;
-
-                cookbookRef.setValue(recipe)
-                        .addOnSuccessListener(aVoid -> {
-                            mDatabase.child("numRecipes").setValue(finalRecipeKey)
-                                    .addOnFailureListener(e -> {
-                                        Log.e("GreenPlate", "Recipe key was not updated");
-                                    });
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.e("GreenPlate", "Recipe was not added");
-                        });
-            } else {
-                Log.e("GreenPlate", "Invalid recipe key");
-            }
-        });
-    }
-
     @NonNull
     @Override
     public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -148,7 +133,7 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
     @Override
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe recipe = recipeList.get(position);
-        holder.bind(recipe);
+        holder.bind(recipe, userPantry);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,11 +166,53 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
             recipeQuantityTextView = itemView.findViewById(R.id.recipeQuantityTV);
         }
 
-        void bind(Recipe recipe) {
+        void bind(Recipe recipe, Map<String, Integer> userPantry) {
             recipeTitleTextView.setText(recipe.getTitle());
-            recipeIngredientsTextView.setText(
-                    "Ingredients: " + TextUtils.join(", ", recipe.getIngredients()));
+            StringBuilder ingredientsBuilder = new StringBuilder();
+            Map<String, Integer> ingredientQuantities = recipe.getIngredientQuantities();
+            if (ingredientQuantities != null) {
+                for (Map.Entry<String, Integer> entry : ingredientQuantities.entrySet()) {
+                    if (ingredientsBuilder.length() > 0) {
+                        ingredientsBuilder.append(", "); // csv se separate kardo
+                    }
+                    String ingredient = entry.getKey();
+                    Integer quantity = entry.getValue();
+                    ingredientsBuilder.append(ingredient).append(" (").append(quantity).append(")");
+                }
+            }
+
+            if (ingredientsBuilder.length() == 0) {
+                ingredientsBuilder.append("No ingredients"); // if nothing found, then show accordingly
+            }
+
+            recipeIngredientsTextView.setText("Ingredients: " + ingredientsBuilder.toString());
             recipeQuantityTextView.setText("Quantity: " + recipe.getQuantity());
+            recipeQuantityTextView.setText("Quantity: " + recipe.getQuantity());
+
+
+            // if enough qty for ingredients in pantry -> green, else red
+            if (hasAllIngredients(recipe, userPantry)) {
+                itemView.setBackgroundColor(Color.parseColor("#aff5a9")); // pantry has ingredients
+                itemView.setEnabled(true);
+            } else {
+                itemView.setBackgroundColor(Color.parseColor("#f5b8a9")); // pantry does not have enough ingredients
+                itemView.setEnabled(false);
+            }
+
+            itemView.setOnClickListener(v -> {
+                if (itemView.isEnabled()) {
+                    Intent intent = new Intent(v.getContext(), RecipeDetailActivity.class);
+
+                    intent.putExtra("RECIPE_TITLE", recipe.getTitle());
+                    intent.putExtra("RECIPE_QUANTITY", recipe.getQuantity());
+                    intent.putStringArrayListExtra("RECIPE_INGREDIENTS",
+                            new ArrayList<>(recipe.getIngredients()));
+
+                    v.getContext().startActivity(intent);
+                } else {
+                    Toast.makeText(v.getContext(), "Not enough ingredients to make this recipe", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }

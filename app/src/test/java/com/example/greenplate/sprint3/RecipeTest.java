@@ -47,7 +47,7 @@ public class RecipeTest {
     public void testEmptyTitleList() {
         RecipeViewModel recipeViewModel = new RecipeViewModel();
         String isInputValid =
-                recipeViewModel.handleRecipeInputData("oat, milk", "1", "")[0];
+                recipeViewModel.handleRecipeInputData("oat, milk", "1", "", "1, 1")[0];
         assertEquals("Input should not be valid","false",isInputValid);
     }
 }
