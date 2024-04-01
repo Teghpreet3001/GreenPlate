@@ -1,7 +1,4 @@
 package com.example.greenplate.models;
-
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +12,8 @@ public class Recipe {
     public Recipe() {
         //
     }
-    public Recipe(String title, List<String> ingredients, String quantity, Map<String, Integer> ingredientQuantities) {
+    public Recipe(String title, List<String> ingredients,
+                  String quantity, Map<String, Integer> ingredientQuantities) {
         this.title = title;
         this.ingredients = ingredients;
         this.quantity = quantity;

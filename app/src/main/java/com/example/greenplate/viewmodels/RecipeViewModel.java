@@ -20,8 +20,6 @@ import com.example.greenplate.models.Recipe;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +45,6 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
             String ingredient = entry.getKey();
             int requiredQuantity = entry.getValue();
             Integer pantryQuantity = userPantry.get(ingredient);
-            // Log.d("RecipeViewModel", "Checking ingredient: " + ingredient + ", required: " + requiredQuantity + ", in pantry: " + pantryQuantity);
 
             if (pantryQuantity == null || pantryQuantity < requiredQuantity) {
                 return false;
@@ -182,7 +179,7 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
             }
 
             if (ingredientsBuilder.length() == 0) {
-                ingredientsBuilder.append("No ingredients"); // if nothing found, then show accordingly
+                ingredientsBuilder.append("No ingredients");
             }
 
             recipeIngredientsTextView.setText("Ingredients: " + ingredientsBuilder.toString());
@@ -195,7 +192,7 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
                 itemView.setBackgroundColor(Color.parseColor("#aff5a9")); // pantry has ingredients
                 itemView.setEnabled(true);
             } else {
-                itemView.setBackgroundColor(Color.parseColor("#f5b8a9")); // pantry does not have enough ingredients
+                itemView.setBackgroundColor(Color.parseColor("#f5b8a9"));
                 itemView.setEnabled(false);
             }
 
@@ -210,7 +207,9 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
 
                     v.getContext().startActivity(intent);
                 } else {
-                    Toast.makeText(v.getContext(), "Not enough ingredients to make this recipe", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(),
+                            "Not enough ingredients to make this recipe",
+                            Toast.LENGTH_SHORT).show();
                 }
             });
         }

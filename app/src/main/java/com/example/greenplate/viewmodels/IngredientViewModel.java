@@ -32,10 +32,10 @@ public class IngredientViewModel extends ViewModel {
         ingredientListLiveData = new MutableLiveData<>();
         ingredientListLiveData.setValue(new ArrayList<>());
     }
-    public static String[] handleIngredientInputData(String name, double quantity, int calories, String expiry) {
+    public static String[] handleIngredientInputData(String name,
+                                                     double quantity, int calories, String expiry) {
         if (name == null) {
             return new String[]{"false", "Name is null"};
-
         }
         if (name.trim().isEmpty()) {
             return new String[]{"false", "Ingredients field is empty"};
@@ -43,7 +43,7 @@ public class IngredientViewModel extends ViewModel {
         return new String[]{"true", ""};
 
     }
-        public void addIngredientToPantry(String userId, Ingredient ingredient) {
+    public void addIngredientToPantry(String userId, Ingredient ingredient) {
         if (ingredient.getName() == null || ingredient.getName().trim().isEmpty()) {
             messageLiveData.postValue("Ingredient must have a name.");
             return;

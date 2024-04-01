@@ -82,17 +82,21 @@ public class RecipeFragment extends Fragment {
             String quantity = recipeQuantityInput.getText().toString().trim();
             String quantityIngredients = recipeIngredientQuantityInput.getText().toString().trim();
 
-            String[] inputRes = adapter.handleRecipeInputData(ingredients, quantity, recipeName, quantityIngredients);
+            String[] inputRes = adapter.handleRecipeInputData(ingredients,
+                    quantity, recipeName, quantityIngredients);
             if (inputRes[0].equals("true")) {
-                List<String> ingredientsList = new ArrayList<>(Arrays.asList(ingredients.split(",")));
+                List<String> ingredientsList = new ArrayList<>(Arrays
+                        .asList(ingredients.split(",")));
                 Map<String, Integer> ingredientQuantitiesMap = new HashMap<>();
 
                 String[] quantitiesArr = quantityIngredients.split(",");
                 for (int i = 0; i < ingredientsList.size(); i++) {
-                    ingredientQuantitiesMap.put(ingredientsList.get(i).trim(), Integer.parseInt(quantitiesArr[i].trim()));
+                    ingredientQuantitiesMap.put(ingredientsList.get(i).trim(),
+                            Integer.parseInt(quantitiesArr[i].trim()));
                 }
 
-                Recipe newRecipe = new Recipe(recipeName, ingredientsList, quantity, ingredientQuantitiesMap);
+                Recipe newRecipe = new Recipe(recipeName,
+                        ingredientsList, quantity, ingredientQuantitiesMap);
 
                 saveRecipeToFirebase(newRecipe);
             } else {
@@ -125,7 +129,8 @@ public class RecipeFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("RecipeFragment", "Failed to read global recipes", databaseError.toException());
+                Log.e("RecipeFragment", "Failed to read global recipes",
+                        databaseError.toException());
             }
         });
 
@@ -140,6 +145,9 @@ public class RecipeFragment extends Fragment {
                     case 1: // sort by title
                         adapter.setSortingStrategy(new SortByTitleStrategy());
                         adapter.applySortStrategy();
+                        break;
+                    default:
+                        // Handle unexpected position here
                         break;
                 }
             }
@@ -185,7 +193,8 @@ public class RecipeFragment extends Fragment {
             if (task.isSuccessful()) {
                 Log.d("RecipeFragment", "Recipe saved successfully.");
             } else {
-                Log.e("RecipeFragment", "Failed to save recipe. Something went wrong.", task.getException());
+                Log.e("RecipeFragment", "Failed to save recipe. Something went wrong.",
+                        task.getException());
             }
         });
     }
