@@ -98,6 +98,61 @@ public class IngredientViewModel extends ViewModel {
                         .postValue("Failed to remove ingredient: " + e.getMessage()));
     }
 
+    public void addIngredientToShoppingList(String userId, Ingredient ingredient) {
+        if (ingredient.getName() == null || ingredient.getName().trim().isEmpty()) {
+            messageLiveData.postValue("Ingredient must have a name.");
+            return;
+        }
+        if (ingredient.getQuantity() <= 0) {
+            messageLiveData.postValue("Quantity must be positive.");
+            return;
+        }
+        if (ingredient.getCaloriesPerServing() <= 0) {
+            messageLiveData.postValue("Calories per serving must be positive.");
+            return;
+        }
+
+        DatabaseReference pantryRef = mDatabase.child("users").child(userId).child("shoppingList")
+                .child(ingredient.getName());
+
+        pantryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Ingredient existingIngredient = dataSnapshot.getValue(Ingredient.class);
+                    if (existingIngredient != null && existingIngredient.getQuantity() > 0) {
+                        messageLiveData.postValue("The ingredient already exists.");
+                    }
+                } else {
+                    // Ingredient does not exist, proceed to add
+                    addShoppingList(pantryRef, ingredient);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle potential errors
+                System.out.println("Database error: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    private void addShoppingList(DatabaseReference pantryRef, Ingredient ingredient) {
+        pantryRef.setValue(ingredient)
+                .addOnSuccessListener(aVoid -> messageLiveData
+                        .postValue("Ingredient added to shopping list."))
+                .addOnFailureListener(e -> messageLiveData.
+                        postValue("Failed to add ingredient to shopping list: " + e.getMessage()));
+    }
+
+    private void removeIngredientFromShoppingList(DatabaseReference ingredientToRemove) {
+        ingredientToRemove.removeValue()
+                .addOnSuccessListener(aVoid -> messageLiveData
+                        .postValue("Ingredient removed from shopping list."))
+                .addOnFailureListener(e -> messageLiveData
+                        .postValue("Failed to remove ingredient from shopping list: " + e.getMessage()));
+    }
+
     // Method to increase the quantity of an ingredient
     public void increaseIngredientQuantity(Ingredient ingredient) {
         final String userId = SingletonFirebase.getInstance().getFirebaseAuth()
@@ -148,6 +203,68 @@ public class IngredientViewModel extends ViewModel {
                         quantity.setValue(newQuantity);
                         if (newQuantity == 0) {
                             removeIngredientFromPantry(ingredientToDecrease);
+                        }
+                        System.out.println("Quantity decremented to: " + newQuantity);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle potential errors here
+            }
+        });
+    }
+
+    public void increaseShoppingItemQuantity(Ingredient ingredient) {
+        final String userId = SingletonFirebase.getInstance().getFirebaseAuth()
+                .getCurrentUser().getUid();
+        DatabaseReference ingredientToIncrease = SingletonFirebase.getInstance()
+                .getDatabaseReference()
+                .child("users").child(userId).child("shoppingList").child(ingredient.getName());
+        DatabaseReference quantity = ingredientToIncrease.child("quantity");
+
+        // Increment the value of "quantity" by 1
+        quantity.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Long currentQuantity = (Long) dataSnapshot.getValue();
+                    if (currentQuantity != null) {
+                        long newQuantity = currentQuantity + 1;
+                        quantity.setValue(newQuantity);
+                        System.out.println("Quantity incremented to: " + newQuantity);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle potential errors here
+            }
+        });
+    }
+
+    // Method to decrease the quantity of an ingredient
+    public void decreaseShoppingItemQuantity(Ingredient ingredient) {
+        final String userId = SingletonFirebase.getInstance()
+                .getFirebaseAuth().getCurrentUser().getUid();
+        DatabaseReference ingredientToDecrease = SingletonFirebase.getInstance()
+                .getDatabaseReference()
+                .child("users").child(userId).child("shoppingList").child(ingredient.getName());
+        DatabaseReference quantity = ingredientToDecrease.child("quantity");
+
+        // Decrement the value of "quantity" by 1
+        quantity.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Long currentQuantity = (Long) dataSnapshot.getValue();
+                    if (currentQuantity != null) {
+                        long newQuantity = currentQuantity - 1;
+                        quantity.setValue(newQuantity);
+                        if (newQuantity == 0) {
+                            removeIngredientFromShoppingList(ingredientToDecrease);
                         }
                         System.out.println("Quantity decremented to: " + newQuantity);
                     }

@@ -78,6 +78,13 @@
             android:layout_height="wrap_content"
             android:text="Add Ingredient to Pantry"
             android:layout_marginBottom="20dp"/>
+
+        <Button
+            android:id="@+id/addShoppingItemBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Item to Shopping List"
+            android:layout_marginBottom="20dp"/>
       
         <Button
             android:id="@+id/ExitBtn"
