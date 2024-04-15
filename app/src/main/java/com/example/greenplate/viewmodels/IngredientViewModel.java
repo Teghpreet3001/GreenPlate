@@ -150,7 +150,8 @@ public class IngredientViewModel extends ViewModel {
                 .addOnSuccessListener(aVoid -> messageLiveData
                         .postValue("Ingredient removed from shopping list."))
                 .addOnFailureListener(e -> messageLiveData
-                        .postValue("Failed to remove ingredient from shopping list: " + e.getMessage()));
+                        .postValue("Failed to remove ingredient from shopping list: "
+                                + e.getMessage()));
     }
 
     // Method to increase the quantity of an ingredient

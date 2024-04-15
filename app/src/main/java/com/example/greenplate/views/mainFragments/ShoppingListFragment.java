@@ -92,7 +92,8 @@ public class ShoppingListFragment extends Fragment {
 
 
     // Adapter class for RecyclerView
-    private class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ShoppingListViewHolder> {
+    private class ShoppingListAdapter
+            extends RecyclerView.Adapter<ShoppingListAdapter.ShoppingListViewHolder> {
 
         private List<Ingredient> shoppingList;
 
