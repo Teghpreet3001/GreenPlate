@@ -49,6 +49,7 @@ public class RecipeFragment extends Fragment {
     private TextInputEditText recipeQuantityInput;
     private TextInputEditText recipeIngredientQuantityInput;
     private Map<String, Integer> userPantry = new HashMap<>();
+    private Map<String, Integer> shoppingList = new HashMap<>();
     private DatabaseReference recipes;
 
     @Override
@@ -122,7 +123,7 @@ public class RecipeFragment extends Fragment {
                 if (adapter != null) {
                     adapter.notifyDataSetChanged();
                 } else {
-                    adapter = new RecipeViewModel(recipeList, userPantry);
+                    adapter = new RecipeViewModel(recipeList, userPantry, shoppingList);
                     recyclerView.setAdapter(adapter);
                 }
             }
@@ -172,18 +173,40 @@ public class RecipeFragment extends Fragment {
                         userPantry.put(ingredientName, quantity);
                     }
                 }
-                setupRecyclerView();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("RecipeFragment", "Failed to read user pantry", databaseError.toException());
             }
         });
+
+        DatabaseReference shoppingListRef = SingletonFirebase.getInstance().getDatabaseReference()
+                .child("users").child(userId).child("shoppingList");
+
+        shoppingListRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot item : dataSnapshot.getChildren()) {
+                    String ingredientName = item.child("name").getValue(String.class);
+                    Integer quantity = item.child("quantity").getValue(Integer.class);
+                    if (ingredientName != null && quantity != null) {
+                        shoppingList.put(ingredientName, quantity);
+                    }
+                }
+                setupRecyclerView();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("RecipeFragment", "Failed to read shoppinglist",
+                        databaseError.toException());
+            }
+        });
+
         return rootView;
     }
 
     private void setupRecyclerView() {
-        adapter = new RecipeViewModel(recipeList, userPantry);
+        adapter = new RecipeViewModel(recipeList, userPantry, shoppingList);
         recyclerView.setAdapter(adapter);
     }
 

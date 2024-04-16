@@ -121,7 +121,9 @@ public class IngredientViewModel extends ViewModel {
                 if (dataSnapshot.exists()) {
                     Ingredient existingIngredient = dataSnapshot.getValue(Ingredient.class);
                     if (existingIngredient != null && existingIngredient.getQuantity() > 0) {
-                        messageLiveData.postValue("The ingredient already exists.");
+                        ingredient.setQuantity((int) (ingredient.getQuantity()
+                                + existingIngredient.getQuantity()));
+                        addShoppingList(pantryRef, ingredient);
                     }
                 } else {
                     // Ingredient does not exist, proceed to add
