@@ -33,6 +33,13 @@
             android:layout_height="wrap_content"
             android:text="Add to Shopping List" />
 
+        <Button
+            android:id="@+id/buyItemsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Buy items"
+            android:layout_marginTop="10dp"/>
+
     </LinearLayout>
 
 </FrameLayout>
