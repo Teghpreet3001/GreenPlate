@@ -32,5 +32,12 @@
         android:layout_height="wrap_content"
         android:text="Back"/>
 
+    <Button
+        android:id="@+id/cookButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cook" />
+
+
 
 </LinearLayout>

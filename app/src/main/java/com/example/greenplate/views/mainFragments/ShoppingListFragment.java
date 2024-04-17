@@ -64,7 +64,7 @@ public class ShoppingListFragment extends Fragment {
             }
         });
         View buyItemsButton = view.findViewById(R.id.buyItemsButton);
-        buyItemsButton.setOnClickListener(v -> buySelectedItems());
+        //buyItemsButton.setOnClickListener(v -> buySelectedItems());
 
 
         RecyclerView ingredientRecyclerView = view.findViewById(R.id.shoppingListRecyclerView);

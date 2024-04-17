@@ -1,8 +1,9 @@
 package com.example.greenplate.models;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class Recipe {
+public class Recipe implements Serializable {
     private String title;
     private String quantity;
     private List<String> ingredients;
