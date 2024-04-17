@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 // Behaves like an adapter
 public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.RecipeViewHolder> {
@@ -165,7 +166,8 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
         if (missingIngredients == null) {
             return;
         }
-
+        AtomicInteger counter = new AtomicInteger(missingIngredients.size());
+        System.out.println("missing ingredient size " + counter);
         for (Map.Entry<String, Integer> entry : missingIngredients.entrySet()) {
             // References: https://stackoverflow.com/questions/10903754/input-text-dialog-android
             // https://developer.android.com/develop/ui/views/components/dialogs#PassingEvents
@@ -176,18 +178,21 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
             caloriesInput.setInputType(InputType.TYPE_CLASS_NUMBER);
             builder.setView(caloriesInput);
 
-            builder.setPositiveButton("Save", (dialog, which) ->
-                    ingredientViewModel.addIngredientToShoppingList(USER_ID,
-                            new Ingredient(entry.getKey(), entry.getValue(),
-                            Integer.parseInt(caloriesInput.getText().toString()),
-                            null)));
+            builder.setPositiveButton("Save", (dialog, which) -> {
+                ingredientViewModel.addIngredientToShoppingList(USER_ID,
+                        new Ingredient(entry.getKey(), entry.getValue(),
+                        Integer.parseInt(caloriesInput.getText().toString()),
+                        null));
+                counter.getAndDecrement();
+                if (counter.get() == 0) {
+                    Toast.makeText(context, "Missing ingredients added to shopping list",
+                            Toast.LENGTH_SHORT).show();
+                }
 
+            });
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
             builder.show();
         }
-
-        Toast.makeText(context, "Missing ingredients added to shopping list",
-                Toast.LENGTH_SHORT).show();
     }
 
     @NonNull

@@ -1,6 +1,5 @@
 package com.example.greenplate.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 public class Ingredient implements Serializable {

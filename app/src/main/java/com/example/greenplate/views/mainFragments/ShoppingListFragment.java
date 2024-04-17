@@ -33,9 +33,13 @@ import java.util.List;
 
 public class ShoppingListFragment extends Fragment {
     private Button addShoppingItemButton;
+    private Button buyItemsButton;
     private ShoppingListAdapter shoppingListAdapter;
 
     private DatabaseReference shoppingItems;
+
+    private String userId = SingletonFirebase.getInstance()
+            .getFirebaseAuth().getCurrentUser().getUid();
 
     private ShoppingListViewModel mViewModel;
     public static ShoppingListFragment newInstance() {
@@ -45,8 +49,7 @@ public class ShoppingListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        final String userId = SingletonFirebase.getInstance()
-                .getFirebaseAuth().getCurrentUser().getUid();
+
         shoppingItems = SingletonFirebase.getInstance().getDatabaseReference()
                 .child("users").child(userId).child("shoppingList");
         View view = inflater.inflate(R.layout.fragment_shopping_list, container, false);
@@ -63,12 +66,32 @@ public class ShoppingListFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        View buyItemsButton = view.findViewById(R.id.buyItemsButton);
-        //buyItemsButton.setOnClickListener(v -> buySelectedItems());
 
-
+        buyItemsButton = view.findViewById(R.id.buyItemsButton);
         RecyclerView ingredientRecyclerView = view.findViewById(R.id.shoppingListRecyclerView);
         ingredientRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        buyItemsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<Ingredient> boughtIngredients = new ArrayList<>();
+                for (int i = 0; i < shoppingListAdapter.getItemCount(); i++) {
+                    ShoppingListAdapter.ShoppingListViewHolder holder =
+                            (ShoppingListAdapter.ShoppingListViewHolder)
+                            ingredientRecyclerView.findViewHolderForAdapterPosition(i);
+                    if (holder.checkBox.isChecked()) {
+                        Ingredient ingredient = shoppingListAdapter.getShoppingList().get(i);
+                        boughtIngredients.add(ingredient);
+                        // Remove from Firebase shopping list
+                        shoppingItems.child(ingredient.getName()).removeValue();
+                        // Add to Firebase pantry (handle duplicates as necessary)
+                        addToPantry(ingredient);
+                    }
+                }
+                shoppingListAdapter.notifyDataSetChanged();
+            }
+        });
+
+
         shoppingItems.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -93,7 +116,32 @@ public class ShoppingListFragment extends Fragment {
 
         return view;
     }
+    private void addToPantry(Ingredient ingredient) {
+        DatabaseReference pantryRef = SingletonFirebase.getInstance().getDatabaseReference()
+                .child("users").child(userId).child("pantry");
+        pantryRef.child(ingredient.getName())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // Merge quantities if exists
+                            Ingredient existingIngredient = snapshot.getValue(Ingredient.class);
+                            existingIngredient.setQuantity((int) (existingIngredient.getQuantity()
+                                    + ingredient.getQuantity()));
+                            pantryRef.child(ingredient.getName()).setValue(existingIngredient);
+                        } else {
+                            // Add new ingredient to pantry
+                            pantryRef.child(ingredient.getName()).setValue(ingredient);
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("ShoppingListFragment", "Failed to update pantry",
+                                error.toException());
+                    }
+                });
+    }
 
     // Adapter class for RecyclerView
     private class ShoppingListAdapter
