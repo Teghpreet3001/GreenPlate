@@ -30,18 +30,28 @@ public class CalorieCountDecorator implements RecipeDecorator {
         return decoratedRecipe.getIngredientQuantities();
     }
 
+
     @Override
     public int getTotalCalories() {
         int totalCalories = 0;
-        for (Map.Entry<String, Integer> entry
-                : decoratedRecipe.getIngredientQuantities().entrySet()) {
-            String ingredientName = entry.getKey();
-            int quantity = entry.getValue();
-            Ingredient ingredient = Ingredient.getIngredientByName(ingredientName);
-            if (ingredient != null) {
-                totalCalories += ingredient.getCaloriesPerServing() * quantity;
+        Map<String, Integer> ingredientQuantities = decoratedRecipe.getIngredientQuantities();
+        if (ingredientQuantities != null) {
+            for (Map.Entry<String, Integer> entry : ingredientQuantities.entrySet()) {
+                String ingredientName = entry.getKey();
+                int quantity = entry.getValue();
+                Ingredient ingredient = Ingredient.getIngredientByName(ingredientName);
+                if (ingredient != null) {
+                    totalCalories += ingredient.getCaloriesPerServing() * quantity;
+                } else {
+                    // Handle the case where the ingredient is not found
+                    System.err.println("Ingredient not found: " + ingredientName);
+                }
             }
+        } else {
+            // Handle the case where ingredientQuantities is null
+            System.err.println("Ingredient quantities map is null");
         }
         return totalCalories;
     }
+
 }

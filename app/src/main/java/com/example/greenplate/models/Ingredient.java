@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Ingredient implements Serializable {
 
-    private static final Map<String, Ingredient> ingredientMap = new HashMap<>();
+    private static final Map<String, Ingredient> INGREDIENT_MAP = new HashMap<>();
 
     private String name;
     private int quantity;
@@ -23,7 +23,7 @@ public class Ingredient implements Serializable {
         this.caloriesPerServing = caloriesPerServing;
         this.expirationDate = expirationDate;
         // Add the ingredient to the map when instantiated
-        ingredientMap.put(name, this);
+        INGREDIENT_MAP.put(name, this);
     }
 
     public String getName() {
@@ -64,6 +64,6 @@ public class Ingredient implements Serializable {
 
     // Static method to retrieve an ingredient by name
     public static Ingredient getIngredientByName(String name) {
-        return ingredientMap.get(name);
+        return INGREDIENT_MAP.get(name);
     }
 }
