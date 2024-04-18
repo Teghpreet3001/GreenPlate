@@ -13,6 +13,10 @@ public class Ingredient implements Serializable {
     private int caloriesPerServing;
     private String expirationDate; // Optional, can be null if not provided
 
+    public Ingredient() {
+
+    }
+
     public Ingredient(String name, int quantity, int caloriesPerServing, String expirationDate) {
         this.name = name;
         this.quantity = quantity;

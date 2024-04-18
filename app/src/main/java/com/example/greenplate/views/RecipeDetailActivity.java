@@ -226,9 +226,18 @@ public class RecipeDetailActivity extends AppCompatActivity {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference pantryRef = SingletonFirebase.getInstance().getDatabaseReference()
                 .child("users").child(userId).child("pantry")
-                .child(ingredientName).child("quantity");
+                .child(ingredientName);
 
-        pantryRef.setValue(newQuantity)
+        if (newQuantity <= 0) {
+            pantryRef.removeValue()
+                    .addOnSuccessListener(aVoid -> Log.d(TAG, ingredientName + " successfully"
+                            + "removed from pantry"))
+                    .addOnFailureListener(e -> Log.d(TAG, "Error deleting ingredient "
+                            + ingredientName + " from pantry: " + e.getMessage()));
+            return;
+        }
+
+        pantryRef.child("quantity").setValue(newQuantity)
                 .addOnSuccessListener(aVoid -> Log.d(TAG,
                         "Pantry updated successfully for ingredient: " + ingredientName))
                 .addOnFailureListener(e -> Log.e(TAG, "Error updating pantry for ingredient: "

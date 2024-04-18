@@ -33,7 +33,8 @@ public class CalorieCountDecorator implements RecipeDecorator {
     @Override
     public int getTotalCalories() {
         int totalCalories = 0;
-        for (Map.Entry<String, Integer> entry : decoratedRecipe.getIngredientQuantities().entrySet()) {
+        for (Map.Entry<String, Integer> entry
+                : decoratedRecipe.getIngredientQuantities().entrySet()) {
             String ingredientName = entry.getKey();
             int quantity = entry.getValue();
             Ingredient ingredient = Ingredient.getIngredientByName(ingredientName);
