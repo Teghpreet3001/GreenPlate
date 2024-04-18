@@ -3,7 +3,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class Recipe implements Serializable {
+public class Recipe implements Serializable, RecipeComponent {
     private String title;
     private String quantity;
     private List<String> ingredients;

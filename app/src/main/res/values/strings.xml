@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GreenPlate</string>
+    <string name="total_calories">Total Calories: %d</string>
 </resources>

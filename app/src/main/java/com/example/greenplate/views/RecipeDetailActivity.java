@@ -230,8 +230,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         pantryRef.setValue(newQuantity)
                 .addOnSuccessListener(aVoid -> Log.d(TAG,
-                        "Pantry updated successfully for ingredient: "
-                        + ingredientName))
+                        "Pantry updated successfully for ingredient: " + ingredientName))
                 .addOnFailureListener(e -> Log.e(TAG, "Error updating pantry for ingredient: "
                         + ingredientName + ": " + e.getMessage()));
     }
