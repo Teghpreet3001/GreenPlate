@@ -272,6 +272,7 @@ public class RecipeViewModel extends RecyclerView.Adapter<RecipeViewModel.Recipe
             } else {
                 itemView.setBackgroundColor(Color.parseColor("#f5b8a9"));
                 itemView.setEnabled(false);
+                missingIngredientsBtn.setVisibility(View.VISIBLE);
             }
 
             itemView.setOnClickListener(v -> {
