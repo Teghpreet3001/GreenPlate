@@ -68,4 +68,41 @@ public class CalorieUnitTests {
         }
         return ingredientQuantities;
     }
+
+    @Test
+    public void testGetTotalCaloriesWithZeroQuantity() {
+        List<String> ingredients = new ArrayList<>();
+        Ingredient banana = new Ingredient("Banana", 3, 20, null); // 3 bananas with 20 calories each
+        Ingredient apple = new Ingredient("Apple", 0, 30, null); // 0 apples, should not add to total calories
+
+        ingredients.add(banana.getName());
+        ingredients.add(apple.getName());
+
+        RecipeComponent mockRecipe = new Recipe("Mock Recipe", ingredients, "5",
+                createIngredientQuantities(banana, apple));
+        CalorieCountDecorator decorator = new CalorieCountDecorator(mockRecipe);
+        int expectedTotalCalories = 3 * banana.getCaloriesPerServing(); // Only banana calories
+        int actualTotalCalories = decorator.getTotalCalories();
+        assertEquals("Total Calories should only include bananas", expectedTotalCalories, actualTotalCalories);
+    }
+
+    @Test
+    public void testGetTotalCaloriesWithDuplicateIngredients() {
+        List<String> ingredients = new ArrayList<>();
+        Ingredient banana = new Ingredient("Banana", 1, 20, null); // A single banana with 20 calories each
+
+        ingredients.add(banana.getName());
+        ingredients.add(banana.getName());
+
+//        System.out.println(ingredients);
+
+        banana.setQuantity(banana.getQuantity() * 2);
+
+        RecipeComponent mockRecipe = new Recipe("Mock Recipe", ingredients, "5",
+                createIngredientQuantities(banana));
+        CalorieCountDecorator decorator = new CalorieCountDecorator(mockRecipe);
+        int expectedTotalCalories = 2 * 20;
+        int actualTotalCalories = decorator.getTotalCalories();
+        assertEquals("Total Calories should sum quantities of duplicate ingredients", expectedTotalCalories, actualTotalCalories);
+    }
 }
