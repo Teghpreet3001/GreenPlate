@@ -47,8 +47,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Add Missing Ingredients to Shopping List" />
-
+            android:text="Add Missing Ingredients to Shopping List"
+            android:backgroundTint="#AB272A" />
     </LinearLayout>
+
 
 </androidx.cardview.widget.CardView>
